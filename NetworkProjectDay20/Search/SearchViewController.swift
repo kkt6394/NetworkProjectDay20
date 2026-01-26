@@ -82,12 +82,12 @@ class SearchViewController: BaseViewController {
 
 extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        5
+        Color.allCases.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: String(describing: ColorCollectionViewCell.self), for: indexPath) as? ColorCollectionViewCell else { return UICollectionViewCell() }
-        cell.configureCell()
+        cell.configureCell(text: Color.allCases[indexPath.row].colorName)
         return cell
     }
     

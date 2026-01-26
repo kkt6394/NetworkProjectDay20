@@ -40,25 +40,23 @@ class ColorCollectionViewCell: UICollectionViewCell {
         }
     }
     func configureView() {
-//        let symbolConfig = UIImage.SymbolConfiguration(pointSize: 20, weight: .bold)
-//        let image = UIImage(systemName: "circle.fill", withConfiguration: symbolConfig)
-//        var config = UIButton.Configuration.plain()
-//        config.image = image
-//        config.title = "색깔"
-//        config.
-//        config.imagePadding = 4
-//        config.baseBackgroundColor = .systemGray5
-//        config.baseForegroundColor = .black
-//        config.imageColorTransformer = .init { _ in .systemYellow}
-//        button.configuration = config
-//        button.layer.cornerRadius = 10
-//        button.clipsToBounds = true
+        let symbolConfig = UIImage.SymbolConfiguration(pointSize: 10, weight: .bold)
+        let image = UIImage(systemName: "circle.fill", withConfiguration: symbolConfig)
+        var config = UIButton.Configuration.plain()
+        config.image = image
+        config.title = "색깔"
+        config.imagePadding = 4
+        config.baseBackgroundColor = .systemGray5
+        config.baseForegroundColor = .black
+        config.imageColorTransformer = .init { _ in .systemYellow}
+        button.configuration = config
+        button.layer.cornerRadius = 10
+        button.clipsToBounds = true
 
     }
     
-    func configureCell() {
-        button.setImage(UIImage(systemName: "circle.fill"), for: .normal)
-        button.setTitle("색깔", for: .normal)
+    func configureCell(text: String) {
+        button.setTitle(text, for: .normal)
 
     }
 }
