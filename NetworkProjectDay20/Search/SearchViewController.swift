@@ -9,10 +9,11 @@ import UIKit
 import SnapKit
 
 class SearchViewController: BaseViewController {
-
+    
     let pageTitle = UILabel()
     let searchBar = UISearchBar()
-    lazy var colorCollectionView = UICollectionView(frame: .zero, collectionViewLayout: setCollectionViewLayout())
+    lazy var colorCollectionView = UICollectionView(frame: .zero, collectionViewLayout: setColorCVLayout())
+    lazy var photoCollectionView = UICollectionView(frame: .zero, collectionViewLayout: setPhotoCVLayout())
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,7 +24,7 @@ class SearchViewController: BaseViewController {
         super.configureHierarchy()
         
         [
-            pageTitle, searchBar, colorCollectionView
+            pageTitle, searchBar, colorCollectionView, photoCollectionView
         ].forEach { view.addSubview($0) }
         
     }
@@ -44,6 +45,12 @@ class SearchViewController: BaseViewController {
             make.horizontalEdges.equalToSuperview().inset(10)
             make.height.equalTo(44)
         }
+        photoCollectionView.snp.makeConstraints { make in
+            make.top.equalTo(colorCollectionView.snp.bottom).offset(4)
+            make.horizontalEdges.equalToSuperview().inset(10)
+            make.bottom.equalToSuperview()
+            
+        }
     }
     override func configureView() {
         super.configureView()
@@ -62,12 +69,21 @@ class SearchViewController: BaseViewController {
                 describing: ColorCollectionViewCell.self
             )
         )
+        photoCollectionView.register(
+            PhotoCollectionViewCell.self,
+            forCellWithReuseIdentifier: String(
+                describing: PhotoCollectionViewCell.self
+            )
+        )
+        
         colorCollectionView.delegate = self
         colorCollectionView.dataSource = self
         
+        photoCollectionView.delegate = self
+        photoCollectionView.dataSource = self
     }
     
-    func setCollectionViewLayout() -> UICollectionViewLayout {
+    func setColorCVLayout() -> UICollectionViewLayout {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
         let width = UIScreen.main.bounds.width / 5
@@ -77,20 +93,52 @@ class SearchViewController: BaseViewController {
         
         return layout
     }
-
+    
+    func setPhotoCVLayout() -> UICollectionViewLayout {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .vertical
+        let width = (UIScreen.main.bounds.width / 2) - 20
+        let height = (UIScreen.main.bounds.height / 3) - 40
+        layout.itemSize = CGSize(width: width, height: height)
+        layout.sectionInset = UIEdgeInsets(top: 4, left: 4, bottom: 4, right: 4)
+        layout.minimumInteritemSpacing = 2
+        layout.minimumLineSpacing = 2
+        
+        return layout
+    }
+    
+    
 }
 
 extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        Color.allCases.count
+        if collectionView == colorCollectionView {
+            return Color.allCases.count
+        } else {
+            return 6
+        }
+        
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: String(describing: ColorCollectionViewCell.self), for: indexPath) as? ColorCollectionViewCell else { return UICollectionViewCell() }
-        cell.configureCell(text: Color.allCases[indexPath.row].colorName)
-        return cell
+        if collectionView == colorCollectionView {
+            guard let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: String(describing: ColorCollectionViewCell.self),
+                for: indexPath
+            ) as? ColorCollectionViewCell else { return UICollectionViewCell() }
+            cell.configureCell(text: Color.allCases[indexPath.row].colorName)
+            return cell
+            
+        } else {
+            guard let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: String(describing: PhotoCollectionViewCell.self),
+                for: indexPath
+            ) as? PhotoCollectionViewCell else { return UICollectionViewCell() }
+            return cell
+            
+            
+        }
     }
-    
     
     
     

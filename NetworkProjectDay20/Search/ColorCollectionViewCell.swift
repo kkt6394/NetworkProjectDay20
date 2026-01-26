@@ -40,7 +40,7 @@ class ColorCollectionViewCell: UICollectionViewCell {
         }
     }
     func configureView() {
-        let symbolConfig = UIImage.SymbolConfiguration(pointSize: 10, weight: .bold)
+        let symbolConfig = UIImage.SymbolConfiguration(pointSize: 8, weight: .bold)
         let image = UIImage(systemName: "circle.fill", withConfiguration: symbolConfig)
         var config = UIButton.Configuration.plain()
         config.image = image
