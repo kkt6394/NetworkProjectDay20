@@ -10,10 +10,12 @@
 		B8FB80AA2F275CAE0017CAAA /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = B8FB80A92F275CAE0017CAAA /* SnapKit */; };
 		B8FB80AD2F275CB90017CAAA /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = B8FB80AC2F275CB90017CAAA /* Alamofire */; };
 		B8FB80B02F275CC30017CAAA /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = B8FB80AF2F275CC30017CAAA /* Kingfisher */; };
+		B8FB81502F279C9A0017CAAA /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = B8FB814F2F279C9A0017CAAA /* .gitignore */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		B8FB80902F2757B00017CAAA /* NetworkProjectDay20.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NetworkProjectDay20.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B8FB814F2F279C9A0017CAAA /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -54,6 +56,7 @@
 		B8FB80872F2757B00017CAAA = {
 			isa = PBXGroup;
 			children = (
+				B8FB814F2F279C9A0017CAAA /* .gitignore */,
 				B8FB80922F2757B00017CAAA /* NetworkProjectDay20 */,
 				B8FB80912F2757B00017CAAA /* Products */,
 			);
@@ -139,6 +142,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B8FB81502F279C9A0017CAAA /* .gitignore in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -183,7 +187,7 @@
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = nonisolated;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
@@ -219,7 +223,7 @@
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = nonisolated;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
