@@ -19,7 +19,7 @@ class NetworkManager {
             "Accept-Version": "v1"
         ]
         let param: Parameters = [
-            "query": "query",
+            "query": "mountain",
             "page": 1,
             "per_page": 20,
             "order_by": "latest",

@@ -10,6 +10,8 @@ import SnapKit
 
 class SearchViewController: BaseViewController {
     
+    var data: [SearchData.Result] = []
+    
     let pageTitle = UILabel()
     let searchBar = UISearchBar()
     lazy var colorCollectionView = UICollectionView(frame: .zero, collectionViewLayout: setColorCVLayout())
@@ -18,6 +20,7 @@ class SearchViewController: BaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureCollectionView()
+        networkCall()
     }
     
     override func configureHierarchy() {
@@ -97,17 +100,28 @@ class SearchViewController: BaseViewController {
     func setPhotoCVLayout() -> UICollectionViewLayout {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
-        let width = (UIScreen.main.bounds.width / 2) - 20
-        let height = (UIScreen.main.bounds.height / 3) - 40
+        let width = (UIScreen.main.bounds.width - 22) / 2
+        let height = width * 1.3
         layout.itemSize = CGSize(width: width, height: height)
-        layout.sectionInset = UIEdgeInsets(top: 4, left: 4, bottom: 4, right: 4)
+        layout.sectionInset = UIEdgeInsets(top: 4, left: 0, bottom: 4, right: 0)
         layout.minimumInteritemSpacing = 2
         layout.minimumLineSpacing = 2
         
         return layout
     }
     
-    
+    func networkCall() {
+        NetworkManager.shared.callRequest { [weak self] result in
+            switch result {
+            case .success(let success):
+                self?.data.append(contentsOf: success.results)
+                print(success.results)
+                self?.photoCollectionView.reloadData()
+            case .failure(let failure):
+                print(failure)
+            }
+        }
+    }
 }
 
 extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSource {
@@ -115,7 +129,7 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
         if collectionView == colorCollectionView {
             return Color.allCases.count
         } else {
-            return 6
+            return data.count
         }
         
     }
@@ -126,7 +140,7 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
                 withReuseIdentifier: String(describing: ColorCollectionViewCell.self),
                 for: indexPath
             ) as? ColorCollectionViewCell else { return UICollectionViewCell() }
-            cell.configureCell(text: Color.allCases[indexPath.row].colorName)
+            cell.configureCell(text: Color.allCases[indexPath.item].colorName)
             return cell
             
         } else {
@@ -134,12 +148,10 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
                 withReuseIdentifier: String(describing: PhotoCollectionViewCell.self),
                 for: indexPath
             ) as? PhotoCollectionViewCell else { return UICollectionViewCell() }
+            cell.configureCell(text: data[indexPath.item].urls.raw)
             return cell
             
             
         }
     }
-    
-    
-    
 }

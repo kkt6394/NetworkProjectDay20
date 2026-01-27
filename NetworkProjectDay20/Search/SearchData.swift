@@ -10,7 +10,7 @@ import Foundation
 struct SearchData: Decodable {
     let total: Int
     let total_pages: Int
-    let result: [Result]
+    let results: [Result]
 }
 
 extension SearchData {
