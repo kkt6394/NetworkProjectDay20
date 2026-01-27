@@ -12,7 +12,7 @@ class NetworkManager {
     static let shared = NetworkManager()
     private init() {}
     
-    func callRequest(query: String, completion: @escaping (Result<SearchData, AFError>) -> Void) {
+    func callSearchRequest(query: String, completion: @escaping (Result<SearchData, AFError>) -> Void) {
         
         let url = "https://api.unsplash.com/search/photos"
         let header: HTTPHeaders = [
@@ -36,6 +36,37 @@ class NetworkManager {
         )
         .validate(statusCode: 200..<300)
         .responseDecodable(of: SearchData.self) {
+            response in
+            switch response.result {
+                
+            case .success(let value):
+                completion(.success(value))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+    
+    func callTopicRequest(topicID: String, completion: @escaping (Result<[TopicData], AFError>) -> Void) {
+        
+        let url = "https://api.unsplash.com/topics/\(topicID)/photos"
+        let header: HTTPHeaders = [
+            "Accept-Version": "v1"
+        ]
+        let param: Parameters = [
+            "page": 1,
+            "client_id": APIKey.key
+        ]
+        
+        AF.request(
+            url,
+            method: .get,
+            parameters: param,
+            encoding: URLEncoding.queryString,
+            headers: header
+        )
+        .validate(statusCode: 200..<300)
+        .responseDecodable(of: [TopicData].self) {
             response in
             switch response.result {
                 

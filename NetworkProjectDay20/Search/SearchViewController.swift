@@ -151,7 +151,7 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
 extension SearchViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         guard let text = searchBar.text else { return }
-        NetworkManager.shared.callRequest(query: text) { [weak self] result in
+        NetworkManager.shared.callSearchRequest(query: text) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let success):

@@ -9,7 +9,11 @@ import UIKit
 import SnapKit
 
 class TopicViewController: BaseViewController {
-
+    
+    var firstData: [TopicData] = []
+    var secondData: [TopicData] = []
+    var thirdData: [TopicData] = []
+    
     let userBtn = UIButton()
     let titleLabel = UILabel()
     
@@ -25,6 +29,9 @@ class TopicViewController: BaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setCV()
+        callRequest(TopicID.golden.rawValue)
+        callRequest(TopicID.business.rawValue)
+        callRequest(TopicID.architect.rawValue)
     }
     override func configureHierarchy() {
         super.configureHierarchy()
@@ -53,6 +60,8 @@ class TopicViewController: BaseViewController {
         firstCV.snp.makeConstraints { make in
             make.top.equalTo(goldenLabel.snp.bottom).offset(20)
             make.horizontalEdges.equalToSuperview()
+            make.height.equalTo(247)
+            
         }
         businessLabel.snp.makeConstraints { make in
             make.top.equalTo(firstCV.snp.bottom).offset(20)
@@ -61,6 +70,8 @@ class TopicViewController: BaseViewController {
         secondCV.snp.makeConstraints { make in
             make.top.equalTo(businessLabel.snp.bottom).offset(20)
             make.horizontalEdges.equalToSuperview()
+            make.height.equalTo(247)
+            
         }
         architectureLabel.snp.makeConstraints { make in
             make.top.equalTo(secondCV.snp.bottom).offset(20)
@@ -69,6 +80,8 @@ class TopicViewController: BaseViewController {
         thirdCV.snp.makeConstraints { make in
             make.top.equalTo(architectureLabel.snp.bottom).offset(20)
             make.horizontalEdges.equalToSuperview()
+            make.height.equalTo(247)
+            
         }
     }
     override func configureView() {
@@ -83,34 +96,69 @@ class TopicViewController: BaseViewController {
         
         businessLabel.text = "비즈니스 및 업무"
         businessLabel.font = .boldSystemFont(ofSize: 16)
-
+        
         architectureLabel.text = "건축 및 인테리어"
         architectureLabel.font = .boldSystemFont(ofSize: 16)
+        
+    }
+    
+    func callRequest(_ topicID: String) {
+        NetworkManager.shared.callTopicRequest(topicID: topicID) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let success):
+                switch topicID {
+                case TopicID.golden.rawValue:
+                    self.firstData = success
+                    self.firstCV.reloadData()
+                    print("first", success)
 
+                case TopicID.business.rawValue:
+                    self.secondData = success
+                    self.secondCV.reloadData()
+                    print("second", success)
+
+                case TopicID.architect.rawValue:
+                    self.thirdData = success
+                    self.thirdCV.reloadData()
+                    print("third", success)
+
+                default:
+                    print(success)
+                }
+            case .failure(let failure):
+                print(failure)
+            }
+        }
     }
 }
 
 extension TopicViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView == firstCV {
-            return 2
+            return firstData.count
         } else if collectionView == secondCV {
-            return 2
+            return secondData.count
         } else {
-            return 2
+            return thirdData.count
         }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if collectionView == firstCV {
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: String(describing: GoldenCollectionViewCell.self), for: indexPath) as? GoldenCollectionViewCell else { return UICollectionViewCell() }
-                    return cell
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: String(describing: PhotoCollectionViewCell.self), for: indexPath) as? PhotoCollectionViewCell else { return UICollectionViewCell() }
+            cell.configureCell(text: firstData[indexPath.item].urls.small)
+            return cell
+            
         } else if collectionView == secondCV {
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: String(describing: BusinessCollectionViewCell.self), for: indexPath) as? BusinessCollectionViewCell else { return UICollectionViewCell() }
-                    return cell
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: String(describing: PhotoCollectionViewCell.self), for: indexPath) as? PhotoCollectionViewCell else { return UICollectionViewCell() }
+            cell.configureCell(text: secondData[indexPath.item].urls.small)
+            return cell
+            
         } else {
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: String(describing: ArchitectureCollectionViewCell.self), for: indexPath) as? ArchitectureCollectionViewCell else { return UICollectionViewCell() }
-                    return cell
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: String(describing: PhotoCollectionViewCell.self), for: indexPath) as? PhotoCollectionViewCell else { return UICollectionViewCell() }
+            cell.configureCell(text: thirdData[indexPath.item].urls.small)
+            return cell
         }
     }
     
@@ -118,22 +166,22 @@ extension TopicViewController: UICollectionViewDelegate, UICollectionViewDataSou
         firstCV.delegate = self
         firstCV.dataSource = self
         firstCV.register(
-            GoldenCollectionViewCell.self,
-            forCellWithReuseIdentifier: String(describing: GoldenCollectionViewCell.self)
+            PhotoCollectionViewCell.self,
+            forCellWithReuseIdentifier: String(describing: PhotoCollectionViewCell.self)
         )
         
         secondCV.delegate = self
         secondCV.dataSource = self
         secondCV.register(
-            BusinessCollectionViewCell.self,
-            forCellWithReuseIdentifier: String(describing: BusinessCollectionViewCell.self)
+            PhotoCollectionViewCell.self,
+            forCellWithReuseIdentifier: String(describing: PhotoCollectionViewCell.self)
         )
         
         thirdCV.delegate = self
         thirdCV.dataSource = self
         thirdCV.register(
-            ArchitectureCollectionViewCell.self,
-            forCellWithReuseIdentifier: String(describing: ArchitectureCollectionViewCell.self)
+            PhotoCollectionViewCell.self,
+            forCellWithReuseIdentifier: String(describing: PhotoCollectionViewCell.self)
         )
     }
     
@@ -146,7 +194,7 @@ extension TopicViewController: UICollectionViewDelegate, UICollectionViewDataSou
         layout.sectionInset = UIEdgeInsets(top: 4, left: 0, bottom: 4, right: 0)
         layout.minimumInteritemSpacing = 2
         layout.minimumLineSpacing = 2
-
+        
         return layout
     }
     

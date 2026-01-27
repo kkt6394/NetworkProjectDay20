@@ -25,12 +25,12 @@ extension TopicData {
     
     struct User: Decodable {
         let name: String
-        let profile_image: Image
+        let profile_image: ProfileImage
     }
 }
 
 extension TopicData.User {
-    struct Image: Decodable {
+    struct ProfileImage: Decodable {
         let medium: String
     }
 }
