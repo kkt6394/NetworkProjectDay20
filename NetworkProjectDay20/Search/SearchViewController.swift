@@ -16,7 +16,7 @@ class SearchViewController: BaseViewController {
     let searchBar = UISearchBar()
     lazy var colorCollectionView = UICollectionView(frame: .zero, collectionViewLayout: setColorCVLayout())
     lazy var photoCollectionView = UICollectionView(frame: .zero, collectionViewLayout: setPhotoCVLayout())
-    let defaultLabel = UILabel()
+    var defaultLabel = UILabel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -150,16 +150,30 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
 
 extension SearchViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        defaultLabel.isHidden = true
         guard let text = searchBar.text else { return }
         NetworkManager.shared.callRequest(query: text) { [weak self] result in
+            guard let self = self else { return }
             switch result {
             case .success(let success):
-                self?.data.append(contentsOf: success.results)
-                print(success.results)
-                self?.photoCollectionView.reloadData()
+//                self.data.append(contentsOf: success.results)
+                self.data = success.results
+                print("성공", success.results)
+                if !self.data.isEmpty {
+                    self.photoCollectionView.reloadData()
+                    self.defaultLabel.isHidden = true
+                    self.photoCollectionView.isHidden = false
+
+                    
+                } else {
+                    self.defaultLabel.text = "검색 결과가 없어요"
+                    self.defaultLabel.isHidden = false
+                    self.photoCollectionView.isHidden = true
+
+                }
+
             case .failure(let failure):
-                print(failure)
+                
+                print("실패", failure)
             }
         }
         searchBar.endEditing(true)
