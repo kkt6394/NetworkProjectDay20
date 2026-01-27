@@ -24,6 +24,22 @@
             </objects>
             <point key="canvasLocation" x="1066.4122137404579" y="137.32394366197184"/>
         </scene>
+        <!--Item-->
+        <scene sceneID="pb2-uG-bgU">
+            <objects>
+                <viewController id="Twe-sA-mXG" customClass="TopicViewController" customModule="NetworkProjectDay20" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="rFf-aT-C7W">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <viewLayoutGuide key="safeArea" id="wwn-i7-L9C"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Item" id="Ueb-Gf-gQs"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dT9-Ue-rcj" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1066" y="877"/>
+        </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="L7J-UZ-wee">
             <objects>
@@ -35,6 +51,7 @@
                     </tabBar>
                     <connections>
                         <segue destination="BYZ-38-t0r" kind="relationship" relationship="viewControllers" id="ALL-0M-vwZ"/>
+                        <segue destination="Twe-sA-mXG" kind="relationship" relationship="viewControllers" id="e8z-mY-qgq"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wPW-Qn-PcJ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
