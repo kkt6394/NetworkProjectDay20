@@ -138,7 +138,7 @@ extension TopicViewController: UICollectionViewDelegate, UICollectionViewDataSou
     }
     
     func configureLayout() -> UICollectionViewLayout {
-        var layout = UICollectionViewFlowLayout()
+        let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
         let width = (UIScreen.main.bounds.width - 22) / 2
         let height = width * 1.3
