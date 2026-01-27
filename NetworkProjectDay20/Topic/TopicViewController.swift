@@ -17,6 +17,9 @@ class TopicViewController: BaseViewController {
     let userBtn = UIButton()
     let titleLabel = UILabel()
     
+    let scrollView = UIScrollView()
+    let contentView = UIView()
+    
     let goldenLabel = UILabel()
     lazy var firstCV = UICollectionView(frame: .zero, collectionViewLayout: configureLayout())
     
@@ -35,9 +38,15 @@ class TopicViewController: BaseViewController {
     }
     override func configureHierarchy() {
         super.configureHierarchy()
+        
         [
-            userBtn, titleLabel, goldenLabel, firstCV, businessLabel, secondCV, architectureLabel, thirdCV
+            userBtn, titleLabel, scrollView
         ].forEach { view.addSubview($0) }
+        
+        scrollView.addSubview(contentView)
+        [
+            goldenLabel, firstCV, businessLabel, secondCV, architectureLabel, thirdCV
+        ].forEach { contentView.addSubview($0)}
     }
     
     override func configureLayout() {
@@ -52,9 +61,18 @@ class TopicViewController: BaseViewController {
             make.leading.equalToSuperview().offset(10)
             make.top.equalTo(userBtn.snp.bottom).offset(10)
         }
+        scrollView.snp.makeConstraints { make in
+            make.top.equalTo(titleLabel.snp.bottom).offset(40)
+            make.bottom.leading.trailing.equalTo(view.safeAreaLayoutGuide)
+        }
+        
+        contentView.snp.makeConstraints { make in
+            make.width.equalTo(scrollView.frameLayoutGuide)
+            make.verticalEdges.equalTo(scrollView.contentLayoutGuide)
+        }
         
         goldenLabel.snp.makeConstraints { make in
-            make.top.equalTo(titleLabel.snp.bottom).offset(40)
+            make.top.equalToSuperview()
             make.leading.equalToSuperview().offset(10)
         }
         firstCV.snp.makeConstraints { make in
@@ -81,6 +99,7 @@ class TopicViewController: BaseViewController {
             make.top.equalTo(architectureLabel.snp.bottom).offset(20)
             make.horizontalEdges.equalToSuperview()
             make.height.equalTo(247)
+            make.bottom.equalToSuperview().offset(-20)
             
         }
     }
