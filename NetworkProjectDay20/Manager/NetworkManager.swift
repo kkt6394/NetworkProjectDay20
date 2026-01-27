@@ -12,14 +12,14 @@ class NetworkManager {
     static let shared = NetworkManager()
     private init() {}
     
-    func callRequest(completion: @escaping (Result<SearchData, AFError>) -> Void) {
+    func callRequest(query: String, completion: @escaping (Result<SearchData, AFError>) -> Void) {
         
         let url = "https://api.unsplash.com/search/photos"
         let header: HTTPHeaders = [
             "Accept-Version": "v1"
         ]
         let param: Parameters = [
-            "query": "mountain",
+            "query": query,
             "page": 1,
             "per_page": 20,
             "order_by": "latest",

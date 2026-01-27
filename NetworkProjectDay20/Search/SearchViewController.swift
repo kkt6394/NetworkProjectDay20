@@ -16,18 +16,19 @@ class SearchViewController: BaseViewController {
     let searchBar = UISearchBar()
     lazy var colorCollectionView = UICollectionView(frame: .zero, collectionViewLayout: setColorCVLayout())
     lazy var photoCollectionView = UICollectionView(frame: .zero, collectionViewLayout: setPhotoCVLayout())
+    let defaultLabel = UILabel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         configureCollectionView()
-        networkCall()
+        searchBar.delegate = self
     }
     
     override func configureHierarchy() {
         super.configureHierarchy()
         
         [
-            pageTitle, searchBar, colorCollectionView, photoCollectionView
+            pageTitle, searchBar, colorCollectionView, photoCollectionView, defaultLabel
         ].forEach { view.addSubview($0) }
         
     }
@@ -52,7 +53,9 @@ class SearchViewController: BaseViewController {
             make.top.equalTo(colorCollectionView.snp.bottom).offset(4)
             make.horizontalEdges.equalToSuperview().inset(10)
             make.bottom.equalToSuperview()
-            
+        }
+        defaultLabel.snp.makeConstraints { make in
+            make.center.equalToSuperview()
         }
     }
     override func configureView() {
@@ -63,6 +66,8 @@ class SearchViewController: BaseViewController {
         
         searchBar.placeholder = "키워드 검색"
         searchBar.searchTextField.backgroundColor = .systemGray5
+        
+        defaultLabel.text = "사진을 검색해보세요"
     }
     
     func configureCollectionView() {
@@ -109,19 +114,6 @@ class SearchViewController: BaseViewController {
         
         return layout
     }
-    
-    func networkCall() {
-        NetworkManager.shared.callRequest { [weak self] result in
-            switch result {
-            case .success(let success):
-                self?.data.append(contentsOf: success.results)
-                print(success.results)
-                self?.photoCollectionView.reloadData()
-            case .failure(let failure):
-                print(failure)
-            }
-        }
-    }
 }
 
 extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSource {
@@ -148,10 +140,28 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
                 withReuseIdentifier: String(describing: PhotoCollectionViewCell.self),
                 for: indexPath
             ) as? PhotoCollectionViewCell else { return UICollectionViewCell() }
-            cell.configureCell(text: data[indexPath.item].urls.raw)
+            cell.configureCell(text: data[indexPath.item].urls.small)
             return cell
             
             
         }
+    }
+}
+
+extension SearchViewController: UISearchBarDelegate {
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        defaultLabel.isHidden = true
+        guard let text = searchBar.text else { return }
+        NetworkManager.shared.callRequest(query: text) { [weak self] result in
+            switch result {
+            case .success(let success):
+                self?.data.append(contentsOf: success.results)
+                print(success.results)
+                self?.photoCollectionView.reloadData()
+            case .failure(let failure):
+                print(failure)
+            }
+        }
+        searchBar.endEditing(true)
     }
 }
