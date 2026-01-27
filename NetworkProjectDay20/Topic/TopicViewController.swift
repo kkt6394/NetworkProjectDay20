@@ -166,17 +166,20 @@ extension TopicViewController: UICollectionViewDelegate, UICollectionViewDataSou
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if collectionView == firstCV {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: String(describing: PhotoCollectionViewCell.self), for: indexPath) as? PhotoCollectionViewCell else { return UICollectionViewCell() }
-            cell.configureCell(text: firstData[indexPath.item].urls.small)
+            cell.configureImageCell(text: firstData[indexPath.item].urls.small)
+            cell.configureCountCell(int: firstData[indexPath.item].likes)
             return cell
             
         } else if collectionView == secondCV {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: String(describing: PhotoCollectionViewCell.self), for: indexPath) as? PhotoCollectionViewCell else { return UICollectionViewCell() }
-            cell.configureCell(text: secondData[indexPath.item].urls.small)
+            cell.configureImageCell(text: secondData[indexPath.item].urls.small)
+            cell.configureCountCell(int: secondData[indexPath.item].likes)
             return cell
             
         } else {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: String(describing: PhotoCollectionViewCell.self), for: indexPath) as? PhotoCollectionViewCell else { return UICollectionViewCell() }
-            cell.configureCell(text: thirdData[indexPath.item].urls.small)
+            cell.configureImageCell(text: thirdData[indexPath.item].urls.small)
+            cell.configureCountCell(int: thirdData[indexPath.item].likes)
             return cell
         }
     }

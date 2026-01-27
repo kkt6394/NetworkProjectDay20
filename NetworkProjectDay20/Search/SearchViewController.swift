@@ -140,7 +140,8 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
                 withReuseIdentifier: String(describing: PhotoCollectionViewCell.self),
                 for: indexPath
             ) as? PhotoCollectionViewCell else { return UICollectionViewCell() }
-            cell.configureCell(text: data[indexPath.item].urls.small)
+            cell.configureImageCell(text: data[indexPath.item].urls.small)
+            cell.configureCountCell(int: data[indexPath.item].likes)
             return cell
             
             

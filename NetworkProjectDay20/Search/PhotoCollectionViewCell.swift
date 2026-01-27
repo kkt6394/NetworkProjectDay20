@@ -43,16 +43,13 @@ class PhotoCollectionViewCell: UICollectionViewCell {
             make.edges.equalToSuperview()
         }
         stackView.snp.makeConstraints { make in
-            make.leading.equalToSuperview().offset(20)
-            make.bottom.equalToSuperview().inset(20)
-            make.height.equalTo(30)
-            make.width.equalTo(100)
+            make.leading.equalToSuperview().offset(10)
+            make.bottom.equalToSuperview().inset(10)
         }
         starImage.snp.makeConstraints { make in
             make.size.equalTo(15)
         }
         countLabel.snp.makeConstraints { make in
-            make.width.equalTo(40)
             make.height.equalTo(15)
         }
     }
@@ -61,18 +58,30 @@ class PhotoCollectionViewCell: UICollectionViewCell {
         
         imageView.image = UIImage(systemName: "circle")
         
-        stackView.spacing = 10
+        stackView.spacing = 5
         stackView.axis = .horizontal
         stackView.distribution = .fill
         stackView.alignment = .center
+        stackView.backgroundColor = .systemGray2
+        stackView.clipsToBounds = true
+        stackView.layer.cornerRadius = 10
+        stackView.isLayoutMarginsRelativeArrangement = true
+        stackView.layoutMargins = UIEdgeInsets(top: 4, left: 8, bottom: 4, right: 8)
         
-        starImage.image = UIImage(systemName: "star")
+        starImage.image = UIImage(systemName: "star.fill")
+        starImage.tintColor = UIColor.yellow
         countLabel.text = "1000"
+        countLabel.textColor = .white
     }
     
-    func configureCell(text: String) {
+    func configureImageCell(text: String) {
         let url = URL(string: text)
         imageView.kf.setImage(with: url)
+
+    }
+    
+    func configureCountCell(int: Int) {
+        countLabel.text = int.formatted()
 
     }
 }
