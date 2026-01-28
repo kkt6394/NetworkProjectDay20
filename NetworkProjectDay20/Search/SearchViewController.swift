@@ -121,6 +121,7 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
         if collectionView == colorCollectionView {
             return Color.allCases.count
         } else {
+            print(data)
             return data.count
         }
         
@@ -147,6 +148,10 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
             
         }
     }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        navigationController?.pushViewController(StatisticsViewController(), animated: true)
+    }
 }
 
 extension SearchViewController: UISearchBarDelegate {
@@ -169,6 +174,7 @@ extension SearchViewController: UISearchBarDelegate {
                     self.defaultLabel.text = "검색 결과가 없어요"
                     self.defaultLabel.isHidden = false
                     self.photoCollectionView.isHidden = true
+                    self.photoCollectionView.reloadData()
 
                 }
 
