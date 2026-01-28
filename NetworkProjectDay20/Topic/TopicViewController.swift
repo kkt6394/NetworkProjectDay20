@@ -132,17 +132,17 @@ class TopicViewController: BaseViewController {
                     self.firstData = success
                     self.firstCV.reloadData()
                     print("first", success)
-
+                    
                 case TopicID.business.rawValue:
                     self.secondData = success
                     self.secondCV.reloadData()
                     print("second", success)
-
+                    
                 case TopicID.architect.rawValue:
                     self.thirdData = success
                     self.thirdCV.reloadData()
                     print("third", success)
-
+                    
                 default:
                     print(success)
                 }
@@ -186,12 +186,49 @@ extension TopicViewController: UICollectionViewDelegate, UICollectionViewDataSou
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let statVC = StatisticsViewController()
+        
         if collectionView == firstCV {
-            let statVC = StatisticsViewController()
-//            statVC.
+            NetworkManager.shared.callStatisticsRequest(id: firstData[indexPath.item].id) { [weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case .success(let success):
+                    statVC.topicData = self.firstData[indexPath.item]
+                    statVC.statData = success
+                    statVC.configureTopic()
+                    self.navigationController?.pushViewController(statVC, animated: true)
+                case .failure(let failure):
+                    print("실패", failure)
+                }
+            }
+        } else if collectionView == secondCV {
+            NetworkManager.shared.callStatisticsRequest(id: secondData[indexPath.item].id) { [weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case .success(let success):
+                    statVC.topicData = self.secondData[indexPath.item]
+                    statVC.statData = success
+                    statVC.configureTopic()
+                    self.navigationController?.pushViewController(statVC, animated: true)
+                case .failure(let failure):
+                    print("실패", failure)
+                }
+            }
+        } else {
+            NetworkManager.shared.callStatisticsRequest(id: thirdData[indexPath.item].id) { [weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case .success(let success):
+                    statVC.topicData = self.thirdData[indexPath.item]
+                    statVC.statData = success
+                    statVC.configureTopic()
+                    self.navigationController?.pushViewController(statVC, animated: true)
+                case .failure(let failure):
+                    print("실패", failure)
+                }
+            }
         }
     }
-    
     func setCV() {
         firstCV.delegate = self
         firstCV.dataSource = self

@@ -23,7 +23,7 @@ class NetworkManager {
             "page": 1,
             "per_page": 20,
             "order_by": "latest",
-            "color": "yellow",
+//            "color": "yellow",
             "client_id": APIKey.key
         ]
         

@@ -13,7 +13,7 @@ class StatisticsViewController: BaseViewController {
     
     var statData: StatisticsData?
     var searchData: SearchData.Result?
-    
+    var topicData: TopicData?
     
     var profileImageUrl: String?
     var mainImageUrl: String?
@@ -145,15 +145,36 @@ class StatisticsViewController: BaseViewController {
         profileStackView.alignment = .leading
         profileStackView.distribution = .equalSpacing
         nameLabel.text = searchData?.user.name
-//        nameLabel.text = "이름입니다."
         createdDay.text = searchData?.created_at
-//        createdDay.text = "yyyy년 mm월 dd일 게시됨"
         heartImage.image = UIImage(systemName: "heart")
         let mainUrl = searchData?.urls.small
         mainImageView.kf.setImage(with: URL(string: mainUrl!))
         infoLabel.text = "정보"
         sizeLabel.text = "크기"
         resolutionLabel.text = "\(searchData?.width ?? 0) x \(searchData?.height ?? 0)"
+        viewLabel.text = "조회수"
+        viewCountLabel.text = statData?.views.total.formatted()
+        print("&&&&&&&&&&&&&&", statData)
+        downloadLabel.text = "다운로드"
+        downloadCountLabel.text = statData?.downloads.total.formatted()
+        chartLabel.text = "차트"
+    }
+    
+    func configureTopic() {
+        let url = topicData?.user.profile_image.medium
+        profileImage.kf.setImage(with: URL(string: url!))
+        profileStackView.axis = .vertical
+        profileStackView.spacing = 0
+        profileStackView.alignment = .leading
+        profileStackView.distribution = .equalSpacing
+        nameLabel.text = topicData?.user.name
+        createdDay.text = topicData?.created_at
+        heartImage.image = UIImage(systemName: "heart")
+        let mainUrl = topicData?.urls.small
+        mainImageView.kf.setImage(with: URL(string: mainUrl!))
+        infoLabel.text = "정보"
+        sizeLabel.text = "크기"
+        resolutionLabel.text = "\(topicData?.width ?? 0) x \(topicData?.height ?? 0)"
         viewLabel.text = "조회수"
         viewCountLabel.text = statData?.views.total.formatted()
         print("&&&&&&&&&&&&&&", statData)

@@ -152,18 +152,16 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
             cell.configureCountCell(int: data[indexPath.item].likes)
             return cell
             
-            
         }
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let statVC = StatisticsViewController()
 
-        
         NetworkManager.shared.callStatisticsRequest(id: data[indexPath.item].id) { result in
             switch result {
             case .success(let success):
                 print(">>>>>>>>>>>>>>>>>>", success)
-                let statVC = StatisticsViewController()
                 statVC.searchData = self.data[indexPath.item]
                 statVC.statData = success
                 statVC.configureSearch()
