@@ -11,6 +11,15 @@ import Kingfisher
 
 class StatisticsViewController: BaseViewController {
     
+    var statData: StatisticsData?
+    var searchData: SearchData.Result?
+    
+    
+    var profileImageUrl: String?
+    var mainImageUrl: String?
+    var name: String?
+    var date: String?
+    
     let profileImage = UIImageView()
 
     let profileStackView = UIStackView()
@@ -39,7 +48,12 @@ class StatisticsViewController: BaseViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.isNavigationBarHidden = false
     }
     override func configureHierarchy() {
         [
@@ -120,18 +134,31 @@ class StatisticsViewController: BaseViewController {
         }
     }
     override func configureView() {
-        profileImage.image = UIImage(systemName: "person")
-        nameLabel.text = "이름입니다."
-        createdDay.text = "yyyy년 mm월 dd일 게시됨"
+        
+    }
+    
+    func configureSearch() {
+        let url = searchData?.user.profile_image.medium
+        profileImage.kf.setImage(with: URL(string: url!))
+        profileStackView.axis = .vertical
+        profileStackView.spacing = 0
+        profileStackView.alignment = .leading
+        profileStackView.distribution = .equalSpacing
+        nameLabel.text = searchData?.user.name
+//        nameLabel.text = "이름입니다."
+        createdDay.text = searchData?.created_at
+//        createdDay.text = "yyyy년 mm월 dd일 게시됨"
         heartImage.image = UIImage(systemName: "heart")
-        mainImageView.image = UIImage(systemName: "circle")
+        let mainUrl = searchData?.urls.small
+        mainImageView.kf.setImage(with: URL(string: mainUrl!))
         infoLabel.text = "정보"
         sizeLabel.text = "크기"
-        resolutionLabel.text = "8888 x 8888"
+        resolutionLabel.text = "\(searchData?.width ?? 0) x \(searchData?.height ?? 0)"
         viewLabel.text = "조회수"
-        viewCountLabel.text = "8,888,888"
+        viewCountLabel.text = statData?.views.total.formatted()
+        print("&&&&&&&&&&&&&&", statData)
         downloadLabel.text = "다운로드"
-        downloadCountLabel.text = "888,888"
+        downloadCountLabel.text = statData?.downloads.total.formatted()
         chartLabel.text = "차트"
     }
 

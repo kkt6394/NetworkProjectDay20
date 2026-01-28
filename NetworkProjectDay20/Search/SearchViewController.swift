@@ -7,6 +7,7 @@
 
 import UIKit
 import SnapKit
+import Kingfisher
 
 class SearchViewController: BaseViewController {
     
@@ -22,6 +23,12 @@ class SearchViewController: BaseViewController {
         super.viewDidLoad()
         configureCollectionView()
         searchBar.delegate = self
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.setNavigationBarHidden(true, animated: false)
+        navigationController?.navigationBar.isTranslucent = true
     }
     
     override func configureHierarchy() {
@@ -150,7 +157,22 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        navigationController?.pushViewController(StatisticsViewController(), animated: true)
+
+        
+        NetworkManager.shared.callStatisticsRequest(id: data[indexPath.item].id) { result in
+            switch result {
+            case .success(let success):
+                print(">>>>>>>>>>>>>>>>>>", success)
+                let statVC = StatisticsViewController()
+                statVC.searchData = self.data[indexPath.item]
+                statVC.statData = success
+                statVC.configureSearch()
+                self.navigationController?.pushViewController(statVC, animated: true)
+            case .failure(let failure):
+                print("실패", failure)
+            }
+        }
+
     }
 }
 

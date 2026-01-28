@@ -31,6 +31,7 @@ class TopicViewController: BaseViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationController?.isNavigationBarHidden = true
         setCV()
         callRequest(TopicID.golden.rawValue)
         callRequest(TopicID.business.rawValue)
@@ -181,6 +182,13 @@ extension TopicViewController: UICollectionViewDelegate, UICollectionViewDataSou
             cell.configureImageCell(text: thirdData[indexPath.item].urls.small)
             cell.configureCountCell(int: thirdData[indexPath.item].likes)
             return cell
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if collectionView == firstCV {
+            let statVC = StatisticsViewController()
+//            statVC.
         }
     }
     

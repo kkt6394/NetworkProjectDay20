@@ -77,4 +77,32 @@ class NetworkManager {
             }
         }
     }
+    
+    func callStatisticsRequest(id: String, completion: @escaping (Result<StatisticsData, AFError>) -> Void) {
+        let url = "https://api.unsplash.com/photos/\(id)/statistics"
+        let header: HTTPHeaders = [
+            "Authorization": APIKey.authorization
+        ]
+        let param: Parameters = [
+            "id": id
+        ]
+        
+        AF.request(
+            url,
+            method: .get,
+            parameters: param,
+            encoding: URLEncoding.queryString,
+            headers: header
+        )
+        .validate(statusCode: 200..<300)
+        .responseDecodable(of: StatisticsData.self) { response in
+            switch response.result {
+                
+            case .success(let value):
+                completion(.success(value))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
 }
