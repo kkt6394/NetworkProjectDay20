@@ -37,6 +37,13 @@ class TopicViewController: BaseViewController {
         callRequest(TopicID.business.rawValue)
         callRequest(TopicID.architect.rawValue)
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.setNavigationBarHidden(true, animated: false)
+        navigationController?.navigationBar.isTranslucent = true
+    }
+    
     override func configureHierarchy() {
         super.configureHierarchy()
         

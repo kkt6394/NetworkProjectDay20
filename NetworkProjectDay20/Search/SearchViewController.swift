@@ -11,6 +11,10 @@ import Kingfisher
 
 class SearchViewController: BaseViewController {
     
+    var page = 1
+    var start = 1
+    var keyword = ""
+    var totalData: SearchData?
     var data: [SearchData.Result] = []
     
     let pageTitle = UILabel()
@@ -170,24 +174,42 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
                 print("실패", failure)
             }
         }
-
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        if indexPath.item == data.count - 4 {
+            guard totalData!.total_pages > page else { return }
+            page += 1
+            NetworkManager.shared.callSearchRequest(query: keyword, page: page) { [weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case .success(let success):
+                    self.data.append(contentsOf: success.results)
+                    self.photoCollectionView.reloadData()
+                case .failure(let failure):
+                    print("실패", failure)
+                }
+            }
+        }
     }
 }
 
 extension SearchViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         guard let text = searchBar.text else { return }
-        NetworkManager.shared.callSearchRequest(query: text) { [weak self] result in
+        NetworkManager.shared.callSearchRequest(query: text, page: page) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let success):
 //                self.data.append(contentsOf: success.results)
+                self.totalData = success
                 self.data = success.results
                 print("성공", success.results)
                 if !self.data.isEmpty {
                     self.photoCollectionView.reloadData()
                     self.defaultLabel.isHidden = true
                     self.photoCollectionView.isHidden = false
+                    self.keyword = text
 
                     
                 } else {

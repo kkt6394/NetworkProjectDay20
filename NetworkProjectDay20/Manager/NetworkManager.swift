@@ -12,7 +12,7 @@ class NetworkManager {
     static let shared = NetworkManager()
     private init() {}
     
-    func callSearchRequest(query: String, completion: @escaping (Result<SearchData, AFError>) -> Void) {
+    func callSearchRequest(query: String, page: Int, completion: @escaping (Result<SearchData, AFError>) -> Void) {
         
         let url = "https://api.unsplash.com/search/photos"
         let header: HTTPHeaders = [
@@ -20,7 +20,7 @@ class NetworkManager {
         ]
         let param: Parameters = [
             "query": query,
-            "page": 1,
+            "page": page,
             "per_page": 20,
             "order_by": "latest",
 //            "color": "yellow",
