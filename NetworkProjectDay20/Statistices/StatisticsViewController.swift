@@ -20,8 +20,11 @@ class StatisticsViewController: BaseViewController {
     var name: String?
     var date: String?
     
+    let scrollView = UIScrollView()
+    let contentsView = UIView()
+    
     let profileImage = UIImageView()
-
+    
     let profileStackView = UIStackView()
     let nameLabel = UILabel()
     let createdDay = UILabel()
@@ -31,7 +34,7 @@ class StatisticsViewController: BaseViewController {
     let mainImageView = UIImageView()
     
     let infoLabel = UILabel()
-
+    
     let sizeLabel = UILabel()
     let resolutionLabel = UILabel()
     let viewLabel = UILabel()
@@ -45,7 +48,7 @@ class StatisticsViewController: BaseViewController {
     
     
     
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -57,8 +60,16 @@ class StatisticsViewController: BaseViewController {
     }
     override func configureHierarchy() {
         [
-            profileImage, profileStackView, heartImage, mainImageView, infoLabel, sizeLabel, resolutionLabel, viewLabel, viewCountLabel, downloadLabel, downloadCountLabel, chartLabel, segCtr
+            profileImage, profileStackView, heartImage, scrollView
         ].forEach { view.addSubview($0) }
+        
+        [
+            contentsView
+        ].forEach { scrollView.addSubview($0) }
+        
+        [
+            mainImageView, infoLabel, sizeLabel, resolutionLabel, viewLabel, viewCountLabel, downloadLabel, downloadCountLabel, chartLabel, segCtr
+        ].forEach { contentsView.addSubview($0) }
         
         [
             nameLabel, createdDay
@@ -71,7 +82,6 @@ class StatisticsViewController: BaseViewController {
             make.top.equalTo(view.safeAreaLayoutGuide)
             make.size.equalTo(48)
         }
-        
         profileStackView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide)
             make.leading.equalTo(profileImage.snp.trailing).offset(10)
@@ -92,10 +102,21 @@ class StatisticsViewController: BaseViewController {
             make.trailing.equalToSuperview().inset(20)
             make.size.equalTo(48)
         }
-        mainImageView.snp.makeConstraints { make in
+        scrollView.snp.makeConstraints { make in
             make.top.equalTo(profileImage.snp.bottom).offset(14)
+            make.bottom.leading.trailing.equalTo(view.safeAreaLayoutGuide)
+        }
+        contentsView.snp.makeConstraints { make in
+            make.width.equalTo(scrollView.frameLayoutGuide)
+            make.verticalEdges.equalTo(scrollView.contentLayoutGuide)
+
+        }
+        
+        mainImageView.snp.makeConstraints { make in
+            make.top.equalToSuperview()
             make.horizontalEdges.equalToSuperview()
         }
+        
         infoLabel.snp.makeConstraints { make in
             make.top.equalTo(mainImageView.snp.bottom).offset(14)
             make.leading.equalToSuperview().offset(20)
@@ -131,6 +152,7 @@ class StatisticsViewController: BaseViewController {
         segCtr.snp.makeConstraints { make in
             make.top.equalTo(chartLabel)
             make.leading.equalTo(sizeLabel)
+            make.bottom.equalToSuperview().inset(30)
         }
     }
     override func configureView() {
@@ -158,6 +180,7 @@ class StatisticsViewController: BaseViewController {
         downloadLabel.text = "다운로드"
         downloadCountLabel.text = statData?.downloads.total.formatted()
         chartLabel.text = "차트"
+        
     }
     
     func configureTopic() {
@@ -181,6 +204,8 @@ class StatisticsViewController: BaseViewController {
         downloadLabel.text = "다운로드"
         downloadCountLabel.text = statData?.downloads.total.formatted()
         chartLabel.text = "차트"
-    }
+        
 
+    }
+    
 }
