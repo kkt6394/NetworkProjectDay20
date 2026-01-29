@@ -52,7 +52,7 @@ class ColorCollectionViewCell: UICollectionViewCell {
         button.configuration = config
         button.layer.cornerRadius = 10
         button.clipsToBounds = true
-
+        button.isUserInteractionEnabled = false
     }
     
     func configureCell(text: String) {

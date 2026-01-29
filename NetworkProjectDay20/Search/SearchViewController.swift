@@ -227,6 +227,7 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
                 }
             }
         } else if collectionView == colorCollectionView {
+            print(#function, indexPath)
             NetworkManager.shared.callSearchRequestByColor(query: keyword, page: 1, color: Color.allCases[indexPath.item].colorName ) { result in
                 switch result {
                 case .success(let success):
