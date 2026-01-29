@@ -213,21 +213,33 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let statVC = StatisticsViewController()
-
-        NetworkManager.shared.callStatisticsRequest(id: data[indexPath.item].id) { result in
-            switch result {
-            case .success(let success):
-                print(">>>>>>>>>>>>>>>>>>", success)
-                statVC.searchData = self.data[indexPath.item]
-                statVC.statData = success
-                statVC.configureSearch()
-                self.navigationController?.pushViewController(statVC, animated: true)
-            case .failure(let failure):
-                print("실패", failure)
+        if collectionView == photoCollectionView {
+            NetworkManager.shared.callStatisticsRequest(id: data[indexPath.item].id) { result in
+                switch result {
+                case .success(let success):
+                    print(">>>>>>>>>>>>>>>>>>", success)
+                    statVC.searchData = self.data[indexPath.item]
+                    statVC.statData = success
+                    statVC.configureSearch()
+                    self.navigationController?.pushViewController(statVC, animated: true)
+                case .failure(let failure):
+                    print("실패", failure)
+                }
+            }
+        } else {
+            NetworkManager.shared.callSearchRequestByColor(query: keyword, page: 1, color: Color.allCases[indexPath.item].colorName ) { result in
+                switch result {
+                case .success(let success):
+                    print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+                    self.totalData = success
+                    self.data = success.results
+                    self.photoCollectionView.reloadData()
+                case .failure(let failure):
+                    print(failure)
+                }
             }
         }
     }
-    
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if indexPath.item == data.count - 4 {
             guard totalData!.total_pages > page else { return }
