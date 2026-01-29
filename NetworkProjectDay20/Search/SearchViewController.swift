@@ -17,6 +17,7 @@ class SearchViewController: BaseViewController {
     var totalData: SearchData?
     var data: [SearchData.Result] = []
     
+    let switchBtn = UIButton()
     let pageTitle = UILabel()
     let searchBar = UISearchBar()
     lazy var colorCollectionView = UICollectionView(frame: .zero, collectionViewLayout: setColorCVLayout())
@@ -39,7 +40,7 @@ class SearchViewController: BaseViewController {
         super.configureHierarchy()
         
         [
-            pageTitle, searchBar, colorCollectionView, photoCollectionView, defaultLabel
+            pageTitle, searchBar, colorCollectionView, photoCollectionView, defaultLabel, switchBtn
         ].forEach { view.addSubview($0) }
         
     }
@@ -68,6 +69,12 @@ class SearchViewController: BaseViewController {
         defaultLabel.snp.makeConstraints { make in
             make.center.equalToSuperview()
         }
+        switchBtn.snp.makeConstraints { make in
+            make.top.equalTo(colorCollectionView)
+            make.trailing.equalToSuperview()
+            make.width.equalTo(75)
+            make.height.equalTo(44)
+        }
     }
     override func configureView() {
         super.configureView()
@@ -79,6 +86,51 @@ class SearchViewController: BaseViewController {
         searchBar.searchTextField.backgroundColor = .systemGray5
         
         defaultLabel.text = "사진을 검색해보세요"
+        switchBtn.addTarget(self, action: #selector(switchBtnTapped), for: .touchUpInside)
+        switchBtn.setImage(UIImage(systemName: "list.bullet.circle"), for: .normal)
+        switchBtn.setTitle(" 관련순", for: .normal)
+        switchBtn.setTitleColor(UIColor.black, for: .normal)
+        switchBtn.backgroundColor = .white
+        switchBtn.tintColor = .black
+        switchBtn.layer.borderWidth = 1
+        switchBtn.layer.borderColor = UIColor.lightGray.cgColor
+        switchBtn.clipsToBounds = true
+        switchBtn.layer.cornerRadius = 22
+    }
+    @objc
+    func switchBtnTapped() {
+        print(#function)
+        guard !data.isEmpty else { return }
+        if switchBtn.title(for: .normal) == " 관련순" {
+            switchBtn.setTitle(" 최신순", for: .normal)
+            
+            NetworkManager.shared.callSearchRequestByOrder(query: keyword, page: 1, order: "relevant") { [weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case .success(let success):
+                    self.totalData = success
+                    self.data = success.results
+                    self.photoCollectionView.reloadData()
+                    
+                case .failure(let failure):
+                    print(failure)
+                }
+            }
+        } else {
+            switchBtn.setTitle(" 관련순", for: .normal)
+            NetworkManager.shared.callSearchRequestByOrder(query: keyword, page: 1, order: "latest") { [weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case .success(let success):
+                    self.totalData = success
+                    self.data = success.results
+                    self.photoCollectionView.reloadData()
+                    
+                case .failure(let failure):
+                    print(failure)
+                }
+            }
+        }
     }
     
     func configureCollectionView() {
@@ -201,7 +253,6 @@ extension SearchViewController: UISearchBarDelegate {
             guard let self = self else { return }
             switch result {
             case .success(let success):
-//                self.data.append(contentsOf: success.results)
                 self.totalData = success
                 self.data = success.results
                 print("성공", success.results)
