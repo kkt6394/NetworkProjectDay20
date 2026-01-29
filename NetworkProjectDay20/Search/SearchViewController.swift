@@ -88,7 +88,7 @@ class SearchViewController: BaseViewController {
         defaultLabel.text = "사진을 검색해보세요"
         switchBtn.addTarget(self, action: #selector(switchBtnTapped), for: .touchUpInside)
         switchBtn.setImage(UIImage(systemName: "list.bullet.circle"), for: .normal)
-        switchBtn.setTitle(" 관련순", for: .normal)
+        switchBtn.setTitle(" 최신순", for: .normal)
         switchBtn.setTitleColor(UIColor.black, for: .normal)
         switchBtn.backgroundColor = .white
         switchBtn.tintColor = .black
@@ -226,7 +226,7 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
                     print("실패", failure)
                 }
             }
-        } else {
+        } else if collectionView == colorCollectionView {
             NetworkManager.shared.callSearchRequestByColor(query: keyword, page: 1, color: Color.allCases[indexPath.item].colorName ) { result in
                 switch result {
                 case .success(let success):
