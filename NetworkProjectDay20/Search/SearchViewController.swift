@@ -103,7 +103,7 @@ class SearchViewController: BaseViewController {
         guard !data.isEmpty else { return }
         if switchBtn.title(for: .normal) == " 관련순" {
             switchBtn.setTitle(" 최신순", for: .normal)
-            
+        
             NetworkManager.shared.callSearchRequestByOrder(query: keyword, page: 1, order: "relevant") { [weak self] result in
                 guard let self = self else { return }
                 switch result {
@@ -158,9 +158,10 @@ class SearchViewController: BaseViewController {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
         let width = UIScreen.main.bounds.width / 5
-        layout.itemSize = CGSize(width: width, height: 44)
+        layout.itemSize = CGSize(width: 100, height: 44)
         layout.sectionInset = UIEdgeInsets(top: 0, left: 4, bottom: 0, right: 4)
-        layout.minimumInteritemSpacing = 10
+//        layout.minimumInteritemSpacing = 10
+        layout.minimumLineSpacing = 10
         
         return layout
     }
@@ -197,6 +198,7 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
                 for: indexPath
             ) as? ColorCollectionViewCell else { return UICollectionViewCell() }
             cell.configureCell(text: Color.allCases[indexPath.item].colorName)
+            cell.configureColor(color: Color.allCases[indexPath.item].hexColor)
             return cell
             
         } else {
@@ -228,7 +230,7 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
             }
         } else if collectionView == colorCollectionView {
             print(#function, indexPath)
-            NetworkManager.shared.callSearchRequestByColor(query: keyword, page: 1, color: Color.allCases[indexPath.item].colorName ) { result in
+            NetworkManager.shared.callSearchRequestByColor(query: keyword, page: 1, color: Color.allCases[indexPath.item].rawValue ) { result in
                 switch result {
                 case .success(let success):
                     print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")

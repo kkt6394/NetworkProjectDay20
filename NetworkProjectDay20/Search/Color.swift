@@ -5,9 +5,9 @@
 //  Created by 김기태 on 1/26/26.
 //
 
-import Foundation
+import UIKit
 
-enum Color: Int, CaseIterable {
+enum Color: String, CaseIterable {
     case black_and_white
     case black
     case white
@@ -46,4 +46,53 @@ enum Color: Int, CaseIterable {
             "블루"
         }
     }
+    
+    var colorCode: String {
+        switch self {
+        case .black_and_white:
+            return "#D3D3D3"
+        case .black:
+            return "#000000"
+        case .white:
+            return "#FFFFFF"
+        case .yellow:
+            return "#FFEF62"
+        case .orange:
+            return "#FFA500"
+        case .red:
+            return "#F04452"
+        case .purple:
+            return "#9636E1"
+        case .magenta:
+            return "#FF00FF"
+        case .green:
+            return "#02B946"
+        case .teal:
+            return "#008080"
+        case .blue:
+            return "#3C59FF"
+        }
+    }
+    var hexColor: UIColor {
+        UIColor(hex: self.colorCode) ?? .clear
+    }
+}
+
+extension UIColor {
+    convenience init?(hex: String) {
+        var hexString = hex.trimmingCharacters(in: .whitespacesAndNewlines)
+        hexString = hexString.replacingOccurrences(of: "#", with: "")
+        guard hexString.count == 6 else { return nil }
+
+        var rgbValue: UInt64 = 0
+        Scanner(string: hexString).scanHexInt64(&rgbValue)
+        
+        let red = CGFloat((rgbValue & 0xFF0000) >> 16) / 255
+        let green = CGFloat((rgbValue & 0x00FF00) >> 8) / 255
+        let blue = CGFloat(rgbValue & 0x0000FF) / 255
+        
+        self.init(red: red, green: green, blue: blue, alpha: 1.0)
+        
+    }
+    
 }

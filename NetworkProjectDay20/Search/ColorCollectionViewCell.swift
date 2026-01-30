@@ -9,10 +9,9 @@ import UIKit
 import SnapKit
 
 class ColorCollectionViewCell: UICollectionViewCell {
-    let button = {
-        let button = UIButton()
-        return button
-    }()
+    let stackView = UIStackView()
+    let imageView = UIImageView()
+    let label = UILabel()
         
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -27,36 +26,49 @@ class ColorCollectionViewCell: UICollectionViewCell {
     
     func configureHierarchy() {
         [
-            button
+            stackView
         ].forEach { contentView.addSubview($0) }
+        
+        [
+            imageView, label
+        ].forEach { stackView.addArrangedSubview($0) }
 
     }
     
     func configureLayout() {
-        button.snp.makeConstraints { make in
+        stackView.snp.makeConstraints { make in
             make.center.equalToSuperview()
-            make.width.equalTo(80)
-            make.height.equalTo(40)
+            make.height.equalTo(36)
         }
+        
+        imageView.snp.makeConstraints { make in
+            make.size.equalTo(20)
+        }
+        
     }
     func configureView() {
-        let symbolConfig = UIImage.SymbolConfiguration(pointSize: 8, weight: .bold)
-        let image = UIImage(systemName: "circle.fill", withConfiguration: symbolConfig)
-        var config = UIButton.Configuration.plain()
-        config.image = image
-        config.title = "색깔"
-        config.imagePadding = 4
-        config.baseBackgroundColor = .systemGray5
-        config.baseForegroundColor = .black
-        config.imageColorTransformer = .init { _ in .systemYellow}
-        button.configuration = config
-        button.layer.cornerRadius = 10
-        button.clipsToBounds = true
-        button.isUserInteractionEnabled = false
+        stackView.axis = .horizontal
+        stackView.spacing = 5
+        stackView.alignment = .center
+//        stackView.distribution = .fill
+        stackView.backgroundColor = .systemGray6
+        stackView.clipsToBounds = true
+        stackView.layer.cornerRadius = 20
+        stackView.isLayoutMarginsRelativeArrangement = true
+        stackView.layoutMargins = UIEdgeInsets(top: 0, left: 12, bottom: 0, right: 12)
+        
+        imageView.image = UIImage(systemName: "circle.fill")
+        imageView.tintColor = .brown
+        imageView.contentMode = .scaleAspectFit
+        
+        label.textAlignment = .center
     }
     
     func configureCell(text: String) {
-        button.setTitle(text, for: .normal)
+        label.text = text
 
+    }
+    func configureColor(color: UIColor) {
+        imageView.tintColor = color
     }
 }
