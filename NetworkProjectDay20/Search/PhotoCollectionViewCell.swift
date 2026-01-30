@@ -16,6 +16,8 @@ class PhotoCollectionViewCell: UICollectionViewCell {
     let starImage = UIImageView()
     let countLabel = UILabel()
     
+    let heartImage = UIImageView()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         configureHierarchy()
@@ -29,7 +31,7 @@ class PhotoCollectionViewCell: UICollectionViewCell {
     
     func configureHierarchy() {
         [
-            imageView, stackView
+            imageView, stackView, heartImage
         ].forEach { contentView.addSubview($0) }
         
         [
@@ -52,6 +54,11 @@ class PhotoCollectionViewCell: UICollectionViewCell {
         countLabel.snp.makeConstraints { make in
             make.height.equalTo(15)
         }
+        heartImage.snp.makeConstraints { make in
+            make.bottom.trailing.equalTo(imageView).inset(10)
+            make.size.equalTo(30)
+            
+        }
     }
     
     func configureView() {
@@ -72,6 +79,12 @@ class PhotoCollectionViewCell: UICollectionViewCell {
         starImage.tintColor = UIColor.yellow
         countLabel.text = "1000"
         countLabel.textColor = .white
+        
+        heartImage.image = UIImage(systemName: "heart")
+        heartImage.backgroundColor = .white
+        heartImage.clipsToBounds = true
+        heartImage.layer.cornerRadius = 15
+        heartImage.contentMode = .center
     }
     
     func configureImageCell(text: String) {

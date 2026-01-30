@@ -11,6 +11,10 @@ import Kingfisher
 
 class StatisticsViewController: BaseViewController {
     
+    var closureData: ((Bool) -> Void)?
+
+    var buttonTag: Bool = false
+    
     var statData: StatisticsData?
     var searchData: SearchData.Result?
     var topicData: TopicData?
@@ -29,7 +33,7 @@ class StatisticsViewController: BaseViewController {
     let nameLabel = UILabel()
     let createdDay = UILabel()
     
-    let heartImage = UIImageView()
+    let heartImageBtn = UIButton()
     
     let mainImageView = UIImageView()
     
@@ -46,12 +50,9 @@ class StatisticsViewController: BaseViewController {
     
     let segCtr = UISegmentedControl()
     
-    
-    
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        setBtn()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -60,7 +61,7 @@ class StatisticsViewController: BaseViewController {
     }
     override func configureHierarchy() {
         [
-            profileImage, profileStackView, heartImage, scrollView
+            profileImage, profileStackView, heartImageBtn, scrollView
         ].forEach { view.addSubview($0) }
         
         [
@@ -97,10 +98,10 @@ class StatisticsViewController: BaseViewController {
             make.bottom.equalToSuperview()
             make.height.equalTo(24)
         }
-        heartImage.snp.makeConstraints { make in
+        heartImageBtn.snp.makeConstraints { make in
             make.centerY.equalTo(profileImage)
             make.trailing.equalToSuperview().inset(20)
-            make.size.equalTo(48)
+            make.size.equalTo(30)
         }
         scrollView.snp.makeConstraints { make in
             make.top.equalTo(profileImage.snp.bottom).offset(14)
@@ -159,16 +160,37 @@ class StatisticsViewController: BaseViewController {
         
     }
     
+    func setBtn() {
+        heartImageBtn.addTarget(self, action: #selector(heartImageBtnTapped), for: .touchUpInside)
+    }
+    
+    @objc
+    func heartImageBtnTapped() {
+        if buttonTag {
+            // 좋아요 상태
+            buttonTag = false
+            heartImageBtn.setImage(UIImage(systemName: "heart"), for: .normal)
+            closureData?(false)
+        } else {
+            buttonTag = true
+            heartImageBtn.setImage(UIImage(systemName: "heart.fill"), for: .normal)
+            closureData?(true)
+        }
+        
+    }
+    
     func configureSearch() {
         let url = searchData?.user.profile_image.medium
         profileImage.kf.setImage(with: URL(string: url!))
+        profileImage.layer.cornerRadius = 24
+        profileImage.clipsToBounds = true
         profileStackView.axis = .vertical
         profileStackView.spacing = 0
         profileStackView.alignment = .leading
         profileStackView.distribution = .equalSpacing
         nameLabel.text = searchData?.user.name
         createdDay.text = searchData?.created_at
-        heartImage.image = UIImage(systemName: "heart")
+        heartImageBtn.setImage(UIImage(systemName: "heart"), for: .normal)
         let mainUrl = searchData?.urls.small
         mainImageView.kf.setImage(with: URL(string: mainUrl!))
         infoLabel.text = "정보"
@@ -186,13 +208,15 @@ class StatisticsViewController: BaseViewController {
     func configureTopic() {
         let url = topicData?.user.profile_image.medium
         profileImage.kf.setImage(with: URL(string: url!))
+        profileImage.layer.cornerRadius = 24
+        profileImage.clipsToBounds = true
         profileStackView.axis = .vertical
         profileStackView.spacing = 0
         profileStackView.alignment = .leading
         profileStackView.distribution = .equalSpacing
         nameLabel.text = topicData?.user.name
         createdDay.text = topicData?.created_at
-        heartImage.image = UIImage(systemName: "heart")
+        heartImageBtn.setImage(UIImage(systemName: "heart"), for: .normal)
         let mainUrl = topicData?.urls.small
         mainImageView.kf.setImage(with: URL(string: mainUrl!))
         infoLabel.text = "정보"

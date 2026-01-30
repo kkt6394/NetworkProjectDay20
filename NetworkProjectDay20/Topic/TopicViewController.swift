@@ -33,9 +33,7 @@ class TopicViewController: BaseViewController {
         super.viewDidLoad()
         navigationController?.isNavigationBarHidden = true
         setCV()
-        callRequest(TopicID.golden.rawValue)
-        callRequest(TopicID.business.rawValue)
-        callRequest(TopicID.architect.rawValue)
+        fetchAllTopic()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -129,7 +127,7 @@ class TopicViewController: BaseViewController {
         
     }
     
-    func callRequest(_ topicID: String) {
+    func callRequest(_ topicID: String, completion: @escaping () -> Void ) {
         NetworkManager.shared.callTopicRequest(topicID: topicID) { [weak self] result in
             guard let self = self else { return }
             switch result {
@@ -137,17 +135,14 @@ class TopicViewController: BaseViewController {
                 switch topicID {
                 case TopicID.golden.rawValue:
                     self.firstData = success
-                    self.firstCV.reloadData()
                     print("first", success)
                     
                 case TopicID.business.rawValue:
                     self.secondData = success
-                    self.secondCV.reloadData()
                     print("second", success)
                     
                 case TopicID.architect.rawValue:
                     self.thirdData = success
-                    self.thirdCV.reloadData()
                     print("third", success)
                     
                 default:
@@ -156,6 +151,30 @@ class TopicViewController: BaseViewController {
             case .failure(let failure):
                 print(failure)
             }
+            completion()
+        }
+        
+    }
+    
+    func fetchAllTopic() {
+        let group = DispatchGroup()
+        
+        group.enter()
+        callRequest(TopicID.golden.rawValue) {
+            group.leave()
+        }
+        group.enter()
+        callRequest(TopicID.business.rawValue) {
+            group.leave()
+        }
+        group.enter()
+        callRequest(TopicID.architect.rawValue) {
+            group.leave()
+        }
+        group.notify(queue: .main) {
+            self.firstCV.reloadData()
+            self.secondCV.reloadData()
+            self.thirdCV.reloadData()
         }
     }
 }
