@@ -30,6 +30,9 @@ class SearchViewController: BaseViewController {
         super.viewDidLoad()
         configureCollectionView()
         searchBar.delegate = self
+        if let savedData = UserDefaults.standard.array(forKey: "likedID") as? Array<String> {
+            likedID = Set(savedData)
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -233,6 +236,7 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
                 } else {
                     self.likedID.remove(photoID)
                 }
+                UserDefaults.standard.set(Array(self.likedID), forKey: "likedID")
                 self.photoCollectionView.reloadItems(at: [indexPath])
             }
                 
