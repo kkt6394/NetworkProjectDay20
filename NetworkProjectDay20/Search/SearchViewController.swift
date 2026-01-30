@@ -11,7 +11,7 @@ import Kingfisher
 
 class SearchViewController: BaseViewController {
     
-    var heartBtnTag: Bool = false
+    var likedID: Set<String> = []
     
     var page = 1
     var start = 1
@@ -210,7 +210,8 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
             ) as? PhotoCollectionViewCell else { return UICollectionViewCell() }
             cell.configureImageCell(text: data[indexPath.item].urls.small)
             cell.configureCountCell(int: data[indexPath.item].likes)
-            if heartBtnTag {
+            
+            if likedID.contains(data[indexPath.item].id) {
                 cell.heartImage.image = UIImage(systemName: "heart.fill")
             } else {
                 cell.heartImage.image = UIImage(systemName: "heart")
@@ -223,8 +224,15 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let statVC = StatisticsViewController()
         if collectionView == photoCollectionView {
-            statVC.closureData = { value in
-                self.heartBtnTag = value
+            let photoID = data[indexPath.item].id
+            statVC.buttonTag = likedID.contains(photoID)
+            
+            statVC.closureData = { isliked in
+                if isliked {
+                    self.likedID.insert(photoID)
+                } else {
+                    self.likedID.remove(photoID)
+                }
                 self.photoCollectionView.reloadItems(at: [indexPath])
             }
                 

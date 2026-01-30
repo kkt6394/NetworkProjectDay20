@@ -13,7 +13,8 @@ class StatisticsViewController: BaseViewController {
     
     var closureData: ((Bool) -> Void)?
 
-    var buttonTag: Bool = false
+    lazy var key = searchData?.id
+    lazy var buttonTag = UserDefaults.standard.bool(forKey: key ?? "")
     
     var statData: StatisticsData?
     var searchData: SearchData.Result?
@@ -58,6 +59,8 @@ class StatisticsViewController: BaseViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.isNavigationBarHidden = false
+        let imageName = buttonTag ? "heart.fill" : "heart"
+        heartImageBtn.setImage(UIImage(systemName: imageName), for: .normal)
     }
     override func configureHierarchy() {
         [
@@ -168,11 +171,12 @@ class StatisticsViewController: BaseViewController {
     func heartImageBtnTapped() {
         if buttonTag {
             // 좋아요 상태
-            buttonTag = false
+            UserDefaults.standard.set(false, forKey: key ?? "")
             heartImageBtn.setImage(UIImage(systemName: "heart"), for: .normal)
             closureData?(false)
         } else {
-            buttonTag = true
+            UserDefaults.standard.set(true, forKey: key ?? "")
+
             heartImageBtn.setImage(UIImage(systemName: "heart.fill"), for: .normal)
             closureData?(true)
         }
