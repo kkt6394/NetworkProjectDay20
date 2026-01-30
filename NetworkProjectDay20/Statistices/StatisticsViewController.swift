@@ -202,7 +202,6 @@ class StatisticsViewController: BaseViewController {
         resolutionLabel.text = "\(searchData?.width ?? 0) x \(searchData?.height ?? 0)"
         viewLabel.text = "조회수"
         viewCountLabel.text = statData?.views.total.formatted()
-        print("&&&&&&&&&&&&&&", statData)
         downloadLabel.text = "다운로드"
         downloadCountLabel.text = statData?.downloads.total.formatted()
         chartLabel.text = "차트"
@@ -228,7 +227,6 @@ class StatisticsViewController: BaseViewController {
         resolutionLabel.text = "\(topicData?.width ?? 0) x \(topicData?.height ?? 0)"
         viewLabel.text = "조회수"
         viewCountLabel.text = statData?.views.total.formatted()
-        print("&&&&&&&&&&&&&&", statData)
         downloadLabel.text = "다운로드"
         downloadCountLabel.text = statData?.downloads.total.formatted()
         chartLabel.text = "차트"

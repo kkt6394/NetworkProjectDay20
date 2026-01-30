@@ -190,7 +190,6 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
         if collectionView == colorCollectionView {
             return Color.allCases.count
         } else {
-            print(data)
             return data.count
         }
         
@@ -243,7 +242,6 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
             NetworkManager.shared.callStatisticsRequest(id: data[indexPath.item].id) { result in
                 switch result {
                 case .success(let success):
-                    print(">>>>>>>>>>>>>>>>>>", success)
                     statVC.searchData = self.data[indexPath.item]
                     statVC.statData = success
                     statVC.configureSearch()
@@ -257,7 +255,6 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
             NetworkManager.shared.callSearchRequestByColor(query: keyword, page: 1, color: Color.allCases[indexPath.item].rawValue ) { result in
                 switch result {
                 case .success(let success):
-                    print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
                     self.totalData = success
                     self.data = success.results
                     self.photoCollectionView.reloadData()

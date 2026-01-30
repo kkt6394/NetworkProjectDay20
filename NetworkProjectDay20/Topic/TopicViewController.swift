@@ -135,15 +135,12 @@ class TopicViewController: BaseViewController {
                 switch topicID {
                 case TopicID.golden.rawValue:
                     self.firstData = success
-                    print("first", success)
                     
                 case TopicID.business.rawValue:
                     self.secondData = success
-                    print("second", success)
                     
                 case TopicID.architect.rawValue:
                     self.thirdData = success
-                    print("third", success)
                     
                 default:
                     print(success)

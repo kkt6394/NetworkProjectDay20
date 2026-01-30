@@ -82,7 +82,6 @@ class NetworkManager {
         }
     }
     func callSearchRequestByColor(query: String, page: Int, color: String, completion: @escaping (Result<SearchData, AFError>) -> Void) {
-        print(query, page, color)
         let url = "https://api.unsplash.com/search/photos"
         let header: HTTPHeaders = [
             "Accept-Version": "v1"
