@@ -12,7 +12,7 @@ class NetworkManager {
     static let shared = NetworkManager()
     private init() {}
     
-    func callSearchRequest(query: String, page: Int, completion: @escaping (Result<SearchData, AFError>) -> Void) {
+    func callSearchRequest(query: String, page: Int, completion: @escaping (Result<SearchData, NetworkError>) -> Void) {
         
         let url = "https://api.unsplash.com/search/photos"
         let header: HTTPHeaders = [
@@ -22,8 +22,6 @@ class NetworkManager {
             "query": query,
             "page": page,
             "per_page": 20,
-//            "order_by": "latest",
-//            "color": "yellow",
             "client_id": APIKey.key
         ]
         
@@ -41,13 +39,35 @@ class NetworkManager {
                 
             case .success(let value):
                 completion(.success(value))
-            case .failure(let error):
-                completion(.failure(error))
+            case .failure:
+                let customError = self.handleStatusCode(response: response)
+                completion(.failure(customError))
+                
             }
         }
     }
     
-    func callSearchRequestByOrder(query: String, page: Int, order: String, completion: @escaping (Result<SearchData, AFError>) -> Void) {
+    func handleStatusCode<T>(response: DataResponse<T, AFError>) -> NetworkError {
+        if let statusCode = response.response?.statusCode {
+            switch statusCode {
+            case 400:
+                return .badRequest
+            case 401:
+                return .unauthorized
+            case 403:
+                return .forbidden
+            case 404:
+                return .notFound
+            case 500, 503:
+                return .somethingWrong
+            default:
+                return .somethingWrong
+            }
+        }
+        return .somethingWrong
+    }
+    
+    func callSearchRequestByOrder(query: String, page: Int, order: String, completion: @escaping (Result<SearchData, NetworkError>) -> Void) {
         
         let url = "https://api.unsplash.com/search/photos"
         let header: HTTPHeaders = [
@@ -58,7 +78,6 @@ class NetworkManager {
             "page": page,
             "per_page": 20,
             "order_by": order,
-//            "color": "yellow",
             "client_id": APIKey.key
         ]
         
@@ -76,12 +95,13 @@ class NetworkManager {
                 
             case .success(let value):
                 completion(.success(value))
-            case .failure(let error):
+            case .failure:
+                let error = self.handleStatusCode(response: response)
                 completion(.failure(error))
             }
         }
     }
-    func callSearchRequestByColor(query: String, page: Int, color: String, completion: @escaping (Result<SearchData, AFError>) -> Void) {
+    func callSearchRequestByColor(query: String, page: Int, color: String, completion: @escaping (Result<SearchData, NetworkError>) -> Void) {
         let url = "https://api.unsplash.com/search/photos"
         let header: HTTPHeaders = [
             "Accept-Version": "v1"
@@ -108,12 +128,13 @@ class NetworkManager {
                 
             case .success(let value):
                 completion(.success(value))
-            case .failure(let error):
+            case .failure:
+                let error = self.handleStatusCode(response: response)
                 completion(.failure(error))
             }
         }
     }
-    func callTopicRequest(topicID: String, completion: @escaping (Result<[TopicData], AFError>) -> Void) {
+    func callTopicRequest(topicID: String, completion: @escaping (Result<[TopicData], NetworkError>) -> Void) {
         
         let url = "https://api.unsplash.com/topics/\(topicID)/photos"
         let header: HTTPHeaders = [
@@ -138,13 +159,14 @@ class NetworkManager {
                 
             case .success(let value):
                 completion(.success(value))
-            case .failure(let error):
+            case .failure:
+                let error = self.handleStatusCode(response: response)
                 completion(.failure(error))
             }
         }
     }
     
-    func callStatisticsRequest(id: String, completion: @escaping (Result<StatisticsData, AFError>) -> Void) {
+    func callStatisticsRequest(id: String, completion: @escaping (Result<StatisticsData, NetworkError>) -> Void) {
         let url = "https://api.unsplash.com/photos/\(id)/statistics"
         let header: HTTPHeaders = [
             "Authorization": APIKey.authorization
@@ -166,7 +188,8 @@ class NetworkManager {
                 
             case .success(let value):
                 completion(.success(value))
-            case .failure(let error):
+            case .failure:
+                let error = self.handleStatusCode(response: response)
                 completion(.failure(error))
             }
         }

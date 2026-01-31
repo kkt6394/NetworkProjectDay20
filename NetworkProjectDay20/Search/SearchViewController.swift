@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 import Kingfisher
+import Toast
 
 class SearchViewController: BaseViewController {
     
@@ -102,6 +103,7 @@ class SearchViewController: BaseViewController {
         switchBtn.clipsToBounds = true
         switchBtn.layer.cornerRadius = 22
     }
+    
     @objc
     func switchBtnTapped() {
         print(#function)
@@ -119,6 +121,19 @@ class SearchViewController: BaseViewController {
                     
                 case .failure(let failure):
                     print(failure)
+                    switch failure {
+                        
+                    case .badRequest:
+                        ToastManager.showToast(in: self, message: NetworkError.badRequest.description)
+                    case .unauthorized:
+                        ToastManager.showToast(in: self, message: NetworkError.unauthorized.description)
+                    case .forbidden:
+                        ToastManager.showToast(in: self, message: NetworkError.forbidden.description)
+                    case .notFound:
+                        ToastManager.showToast(in: self, message: NetworkError.notFound.description)
+                    case .somethingWrong:
+                        ToastManager.showToast(in: self, message: NetworkError.somethingWrong.description)
+                    }
                 }
             }
         } else {
@@ -133,6 +148,19 @@ class SearchViewController: BaseViewController {
                     
                 case .failure(let failure):
                     print(failure)
+                    switch failure {
+                        
+                    case .badRequest:
+                        ToastManager.showToast(in: self, message: NetworkError.badRequest.description)
+                    case .unauthorized:
+                        ToastManager.showToast(in: self, message: NetworkError.unauthorized.description)
+                    case .forbidden:
+                        ToastManager.showToast(in: self, message: NetworkError.forbidden.description)
+                    case .notFound:
+                        ToastManager.showToast(in: self, message: NetworkError.notFound.description)
+                    case .somethingWrong:
+                        ToastManager.showToast(in: self, message: NetworkError.somethingWrong.description)
+                    }
                 }
             }
         }
@@ -192,7 +220,6 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
         } else {
             return data.count
         }
-        
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -248,6 +275,19 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
                     self.navigationController?.pushViewController(statVC, animated: true)
                 case .failure(let failure):
                     print("실패", failure)
+                    switch failure {
+                        
+                    case .badRequest:
+                        ToastManager.showToast(in: self, message: NetworkError.badRequest.description)
+                    case .unauthorized:
+                        ToastManager.showToast(in: self, message: NetworkError.unauthorized.description)
+                    case .forbidden:
+                        ToastManager.showToast(in: self, message: NetworkError.forbidden.description)
+                    case .notFound:
+                        ToastManager.showToast(in: self, message: NetworkError.notFound.description)
+                    case .somethingWrong:
+                        ToastManager.showToast(in: self, message: NetworkError.somethingWrong.description)
+                    }
                 }
             }
         } else if collectionView == colorCollectionView {
@@ -260,6 +300,19 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
                     self.photoCollectionView.reloadData()
                 case .failure(let failure):
                     print(failure)
+                    switch failure {
+                        
+                    case .badRequest:
+                        ToastManager.showToast(in: self, message: NetworkError.badRequest.description)
+                    case .unauthorized:
+                        ToastManager.showToast(in: self, message: NetworkError.unauthorized.description)
+                    case .forbidden:
+                        ToastManager.showToast(in: self, message: NetworkError.forbidden.description)
+                    case .notFound:
+                        ToastManager.showToast(in: self, message: NetworkError.notFound.description)
+                    case .somethingWrong:
+                        ToastManager.showToast(in: self, message: NetworkError.somethingWrong.description)
+                    }
                 }
             }
         }
@@ -276,6 +329,19 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
                     self.photoCollectionView.reloadData()
                 case .failure(let failure):
                     print("실패", failure)
+                    switch failure {
+                        
+                    case .badRequest:
+                        ToastManager.showToast(in: self, message: NetworkError.badRequest.description)
+                    case .unauthorized:
+                        ToastManager.showToast(in: self, message: NetworkError.unauthorized.description)
+                    case .forbidden:
+                        ToastManager.showToast(in: self, message: NetworkError.forbidden.description)
+                    case .notFound:
+                        ToastManager.showToast(in: self, message: NetworkError.notFound.description)
+                    case .somethingWrong:
+                        ToastManager.showToast(in: self, message: NetworkError.somethingWrong.description)
+                    }
                 }
             }
         }
@@ -308,8 +374,20 @@ extension SearchViewController: UISearchBarDelegate {
                 }
 
             case .failure(let failure):
-                
                 print("실패", failure)
+                switch failure {
+                    
+                case .badRequest:
+                    ToastManager.showToast(in: self, message: NetworkError.badRequest.description)
+                case .unauthorized:
+                    ToastManager.showToast(in: self, message: NetworkError.unauthorized.description)
+                case .forbidden:
+                    ToastManager.showToast(in: self, message: NetworkError.forbidden.description)
+                case .notFound:
+                    ToastManager.showToast(in: self, message: NetworkError.notFound.description)
+                case .somethingWrong:
+                    ToastManager.showToast(in: self, message: NetworkError.somethingWrong.description)
+                }
             }
         }
         searchBar.endEditing(true)
