@@ -222,19 +222,7 @@ extension TopicViewController: UICollectionViewDelegate, UICollectionViewDataSou
                     self.navigationController?.pushViewController(statVC, animated: true)
                 case .failure(let failure):
                     print("실패", failure)
-                    switch failure {
-                        
-                    case .badRequest:
-                        ToastManager.showToast(in: self, message: NetworkError.badRequest.description)
-                    case .unauthorized:
-                        ToastManager.showToast(in: self, message: NetworkError.unauthorized.description)
-                    case .forbidden:
-                        ToastManager.showToast(in: self, message: NetworkError.forbidden.description)
-                    case .notFound:
-                        ToastManager.showToast(in: self, message: NetworkError.notFound.description)
-                    case .somethingWrong:
-                        ToastManager.showToast(in: self, message: NetworkError.somethingWrong.description)
-                    }
+                    ToastManager.showToast(in: self, message: failure.description)
                 }
             }
         } else if collectionView == secondCV {
@@ -248,19 +236,7 @@ extension TopicViewController: UICollectionViewDelegate, UICollectionViewDataSou
                     self.navigationController?.pushViewController(statVC, animated: true)
                 case .failure(let failure):
                     print("실패", failure)
-                    switch failure {
-                        
-                    case .badRequest:
-                        ToastManager.showToast(in: self, message: NetworkError.badRequest.description)
-                    case .unauthorized:
-                        ToastManager.showToast(in: self, message: NetworkError.unauthorized.description)
-                    case .forbidden:
-                        ToastManager.showToast(in: self, message: NetworkError.forbidden.description)
-                    case .notFound:
-                        ToastManager.showToast(in: self, message: NetworkError.notFound.description)
-                    case .somethingWrong:
-                        ToastManager.showToast(in: self, message: NetworkError.somethingWrong.description)
-                    }
+                    ToastManager.showToast(in: self, message: failure.description)
                 }
             }
         } else {
@@ -274,19 +250,7 @@ extension TopicViewController: UICollectionViewDelegate, UICollectionViewDataSou
                     self.navigationController?.pushViewController(statVC, animated: true)
                 case .failure(let failure):
                     print("실패", failure)
-                    switch failure {
-                        
-                    case .badRequest:
-                        ToastManager.showToast(in: self, message: NetworkError.badRequest.description)
-                    case .unauthorized:
-                        ToastManager.showToast(in: self, message: NetworkError.unauthorized.description)
-                    case .forbidden:
-                        ToastManager.showToast(in: self, message: NetworkError.forbidden.description)
-                    case .notFound:
-                        ToastManager.showToast(in: self, message: NetworkError.notFound.description)
-                    case .somethingWrong:
-                        ToastManager.showToast(in: self, message: NetworkError.somethingWrong.description)
-                    }
+                    ToastManager.showToast(in: self, message: failure.description)
                 }
             }
         }

@@ -121,19 +121,7 @@ class SearchViewController: BaseViewController {
                     
                 case .failure(let failure):
                     print(failure)
-                    switch failure {
-                        
-                    case .badRequest:
-                        ToastManager.showToast(in: self, message: NetworkError.badRequest.description)
-                    case .unauthorized:
-                        ToastManager.showToast(in: self, message: NetworkError.unauthorized.description)
-                    case .forbidden:
-                        ToastManager.showToast(in: self, message: NetworkError.forbidden.description)
-                    case .notFound:
-                        ToastManager.showToast(in: self, message: NetworkError.notFound.description)
-                    case .somethingWrong:
-                        ToastManager.showToast(in: self, message: NetworkError.somethingWrong.description)
-                    }
+                    ToastManager.showToast(in: self, message: failure.description)
                 }
             }
         } else {
@@ -148,19 +136,7 @@ class SearchViewController: BaseViewController {
                     
                 case .failure(let failure):
                     print(failure)
-                    switch failure {
-                        
-                    case .badRequest:
-                        ToastManager.showToast(in: self, message: NetworkError.badRequest.description)
-                    case .unauthorized:
-                        ToastManager.showToast(in: self, message: NetworkError.unauthorized.description)
-                    case .forbidden:
-                        ToastManager.showToast(in: self, message: NetworkError.forbidden.description)
-                    case .notFound:
-                        ToastManager.showToast(in: self, message: NetworkError.notFound.description)
-                    case .somethingWrong:
-                        ToastManager.showToast(in: self, message: NetworkError.somethingWrong.description)
-                    }
+                    ToastManager.showToast(in: self, message: failure.description)
                 }
             }
         }
@@ -275,19 +251,7 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
                     self.navigationController?.pushViewController(statVC, animated: true)
                 case .failure(let failure):
                     print("실패", failure)
-                    switch failure {
-                        
-                    case .badRequest:
-                        ToastManager.showToast(in: self, message: NetworkError.badRequest.description)
-                    case .unauthorized:
-                        ToastManager.showToast(in: self, message: NetworkError.unauthorized.description)
-                    case .forbidden:
-                        ToastManager.showToast(in: self, message: NetworkError.forbidden.description)
-                    case .notFound:
-                        ToastManager.showToast(in: self, message: NetworkError.notFound.description)
-                    case .somethingWrong:
-                        ToastManager.showToast(in: self, message: NetworkError.somethingWrong.description)
-                    }
+                    ToastManager.showToast(in: self, message: failure.description)
                 }
             }
         } else if collectionView == colorCollectionView {
@@ -300,19 +264,7 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
                     self.photoCollectionView.reloadData()
                 case .failure(let failure):
                     print(failure)
-                    switch failure {
-                        
-                    case .badRequest:
-                        ToastManager.showToast(in: self, message: NetworkError.badRequest.description)
-                    case .unauthorized:
-                        ToastManager.showToast(in: self, message: NetworkError.unauthorized.description)
-                    case .forbidden:
-                        ToastManager.showToast(in: self, message: NetworkError.forbidden.description)
-                    case .notFound:
-                        ToastManager.showToast(in: self, message: NetworkError.notFound.description)
-                    case .somethingWrong:
-                        ToastManager.showToast(in: self, message: NetworkError.somethingWrong.description)
-                    }
+                    ToastManager.showToast(in: self, message: failure.description)
                 }
             }
         }
@@ -329,19 +281,7 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
                     self.photoCollectionView.reloadData()
                 case .failure(let failure):
                     print("실패", failure)
-                    switch failure {
-                        
-                    case .badRequest:
-                        ToastManager.showToast(in: self, message: NetworkError.badRequest.description)
-                    case .unauthorized:
-                        ToastManager.showToast(in: self, message: NetworkError.unauthorized.description)
-                    case .forbidden:
-                        ToastManager.showToast(in: self, message: NetworkError.forbidden.description)
-                    case .notFound:
-                        ToastManager.showToast(in: self, message: NetworkError.notFound.description)
-                    case .somethingWrong:
-                        ToastManager.showToast(in: self, message: NetworkError.somethingWrong.description)
-                    }
+                    ToastManager.showToast(in: self, message: failure.description)
                 }
             }
         }
@@ -375,19 +315,7 @@ extension SearchViewController: UISearchBarDelegate {
 
             case .failure(let failure):
                 print("실패", failure)
-                switch failure {
-                    
-                case .badRequest:
-                    ToastManager.showToast(in: self, message: NetworkError.badRequest.description)
-                case .unauthorized:
-                    ToastManager.showToast(in: self, message: NetworkError.unauthorized.description)
-                case .forbidden:
-                    ToastManager.showToast(in: self, message: NetworkError.forbidden.description)
-                case .notFound:
-                    ToastManager.showToast(in: self, message: NetworkError.notFound.description)
-                case .somethingWrong:
-                    ToastManager.showToast(in: self, message: NetworkError.somethingWrong.description)
-                }
+                ToastManager.showToast(in: self, message: failure.description)
             }
         }
         searchBar.endEditing(true)
