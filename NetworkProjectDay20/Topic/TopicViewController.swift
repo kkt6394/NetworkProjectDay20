@@ -10,6 +10,9 @@ import SnapKit
 
 class TopicViewController: BaseViewController {
     
+    var selectedTopics: [TopicID] = []
+    var topicDataDict: [TopicID: [TopicData]] = [:]
+    
     var firstData: [TopicData] = []
     var secondData: [TopicData] = []
     var thirdData: [TopicData] = []
@@ -127,19 +130,29 @@ class TopicViewController: BaseViewController {
         
     }
     
+    func configureTopicLabel() {
+        goldenLabel.text = selectedTopics[0].topicLabel
+        businessLabel.text = selectedTopics[1].topicLabel
+        architectureLabel.text = selectedTopics[2].topicLabel
+    }
+    
+    func pickRandomTopics() {
+        selectedTopics = Array(TopicID.allCases.shuffled().prefix(3))
+    }
+    
     func callRequest(_ topicID: String, completion: @escaping () -> Void ) {
         NetworkManager.shared.callTopicRequest(topicID: topicID) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let success):
                 switch topicID {
-                case TopicID.golden.rawValue:
+                case selectedTopics[0].rawValue:
                     self.firstData = success
                     
-                case TopicID.business.rawValue:
+                case selectedTopics[1].rawValue:
                     self.secondData = success
                     
-                case TopicID.architect.rawValue:
+                case selectedTopics[2].rawValue:
                     self.thirdData = success
                     
                 default:
@@ -154,18 +167,22 @@ class TopicViewController: BaseViewController {
     }
     
     func fetchAllTopic() {
+        
+        pickRandomTopics()
+        configureTopicLabel()
+        
         let group = DispatchGroup()
         
         group.enter()
-        callRequest(TopicID.golden.rawValue) {
+        callRequest(selectedTopics[0].rawValue) {
             group.leave()
         }
         group.enter()
-        callRequest(TopicID.business.rawValue) {
+        callRequest(selectedTopics[1].rawValue) {
             group.leave()
         }
         group.enter()
-        callRequest(TopicID.architect.rawValue) {
+        callRequest(selectedTopics[2].rawValue) {
             group.leave()
         }
         group.notify(queue: .main) {
