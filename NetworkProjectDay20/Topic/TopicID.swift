@@ -15,7 +15,7 @@ enum TopicID: String, CaseIterable {
     case nature
     case renders = "3d-renders"
     case travel
-    case texture = "texture-patterns"
+    case texture = "textures-patterns"
     case street = "street-photography"
     case film
     case archival
