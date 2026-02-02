@@ -10,6 +10,8 @@ import SnapKit
 
 class TopicViewController: BaseViewController {
     
+    var likedID: Set<String> = []
+    
     var selectedTopics: [TopicID] = []
     var topicDataDict: [TopicID: [TopicData]] = [:]
     
@@ -37,12 +39,16 @@ class TopicViewController: BaseViewController {
         navigationController?.isNavigationBarHidden = true
         setCV()
         fetchAllTopic()
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.setNavigationBarHidden(true, animated: false)
         navigationController?.navigationBar.isTranslucent = true
+        if let savedData = UserDefaults.standard.array(forKey: "likedID") as? Array<String> {
+            self.likedID = Set(savedData)
+        }
     }
     
     override func configureHierarchy() {
@@ -209,18 +215,36 @@ extension TopicViewController: UICollectionViewDelegate, UICollectionViewDataSou
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: String(describing: PhotoCollectionViewCell.self), for: indexPath) as? PhotoCollectionViewCell else { return UICollectionViewCell() }
             cell.configureImageCell(text: firstData[indexPath.item].urls.small)
             cell.configureCountCell(int: firstData[indexPath.item].likes)
+            
+            if likedID.contains(firstData[indexPath.item].id) {
+                cell.heartImage.image = UIImage(systemName: "heart.fill")
+            } else {
+                cell.heartImage.image = UIImage(systemName: "heart")
+            }
             return cell
             
         } else if collectionView == secondCV {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: String(describing: PhotoCollectionViewCell.self), for: indexPath) as? PhotoCollectionViewCell else { return UICollectionViewCell() }
             cell.configureImageCell(text: secondData[indexPath.item].urls.small)
             cell.configureCountCell(int: secondData[indexPath.item].likes)
+            
+            if likedID.contains(secondData[indexPath.item].id) {
+                cell.heartImage.image = UIImage(systemName: "heart.fill")
+            } else {
+                cell.heartImage.image = UIImage(systemName: "heart")
+            }
             return cell
             
         } else {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: String(describing: PhotoCollectionViewCell.self), for: indexPath) as? PhotoCollectionViewCell else { return UICollectionViewCell() }
             cell.configureImageCell(text: thirdData[indexPath.item].urls.small)
             cell.configureCountCell(int: thirdData[indexPath.item].likes)
+            
+            if likedID.contains(thirdData[indexPath.item].id) {
+                cell.heartImage.image = UIImage(systemName: "heart.fill")
+            } else {
+                cell.heartImage.image = UIImage(systemName: "heart")
+            }
             return cell
         }
     }
@@ -229,6 +253,18 @@ extension TopicViewController: UICollectionViewDelegate, UICollectionViewDataSou
         let statVC = StatisticsViewController()
         
         if collectionView == firstCV {
+            let photoID = firstData[indexPath.item].id
+            statVC.buttonTag = likedID.contains(photoID)
+            statVC.closureData = { isliked in
+                if isliked {
+                    self.likedID.insert(photoID)
+                } else {
+                    self.likedID.remove(photoID)
+                }
+                UserDefaults.standard.set(Array(self.likedID), forKey: "likedID")
+                self.firstCV.reloadItems(at: [indexPath])
+            }
+            
             NetworkManager.shared.callStatisticsRequest(id: firstData[indexPath.item].id) { [weak self] result in
                 guard let self = self else { return }
                 switch result {
@@ -243,6 +279,18 @@ extension TopicViewController: UICollectionViewDelegate, UICollectionViewDataSou
                 }
             }
         } else if collectionView == secondCV {
+            let photoID = secondData[indexPath.item].id
+            statVC.buttonTag = likedID.contains(photoID)
+            statVC.closureData = { isliked in
+                if isliked {
+                    self.likedID.insert(photoID)
+                } else {
+                    self.likedID.remove(photoID)
+                }
+                UserDefaults.standard.set(Array(self.likedID), forKey: "likedID")
+                self.secondCV.reloadItems(at: [indexPath])
+            }
+            
             NetworkManager.shared.callStatisticsRequest(id: secondData[indexPath.item].id) { [weak self] result in
                 guard let self = self else { return }
                 switch result {
@@ -257,6 +305,17 @@ extension TopicViewController: UICollectionViewDelegate, UICollectionViewDataSou
                 }
             }
         } else {
+            let photoID = thirdData[indexPath.item].id
+            statVC.buttonTag = likedID.contains(photoID)
+            statVC.closureData = { isliked in
+                if isliked {
+                    self.likedID.insert(photoID)
+                } else {
+                    self.likedID.remove(photoID)
+                }
+                UserDefaults.standard.set(Array(self.likedID), forKey: "likedID")
+                self.thirdCV.reloadItems(at: [indexPath])
+            }
             NetworkManager.shared.callStatisticsRequest(id: thirdData[indexPath.item].id) { [weak self] result in
                 guard let self = self else { return }
                 switch result {
