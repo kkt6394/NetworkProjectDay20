@@ -111,34 +111,50 @@ class SearchViewController: BaseViewController {
         if switchBtn.title(for: .normal) == " 관련순" {
             switchBtn.setTitle(" 최신순", for: .normal)
         
-            NetworkManager.shared.callSearchRequestByOrder(query: keyword, page: 1, order: "relevant") { [weak self] result in
-                guard let self = self else { return }
-                switch result {
-                case .success(let success):
-                    self.totalData = success
-                    self.data = success.results
-                    self.photoCollectionView.reloadData()
-                    
-                case .failure(let failure):
-                    print(failure)
-                    ToastManager.showToast(in: self, message: failure.description)
+            NetworkManager.shared.callRequest(
+                api: .order(
+                    query: keyword,
+                    page: 1,
+                    order: "relevant"
+                ),
+                type: SearchData.self,
+                completion: { [weak self] result in
+                    guard let self = self else { return }
+                    switch result {
+                    case .success(let success):
+                        self.totalData = success
+                        self.data = success.results
+                        self.photoCollectionView.reloadData()
+                        
+                    case .failure(let failure):
+                        print(failure)
+                        ToastManager.showToast(in: self, message: failure.description)
+                    }
                 }
-            }
+            )
         } else {
             switchBtn.setTitle(" 관련순", for: .normal)
-            NetworkManager.shared.callSearchRequestByOrder(query: keyword, page: 1, order: "latest") { [weak self] result in
-                guard let self = self else { return }
-                switch result {
-                case .success(let success):
-                    self.totalData = success
-                    self.data = success.results
-                    self.photoCollectionView.reloadData()
-                    
-                case .failure(let failure):
-                    print(failure)
-                    ToastManager.showToast(in: self, message: failure.description)
+            NetworkManager.shared.callRequest(
+                api: .order(
+                    query: keyword,
+                    page: 1,
+                    order: "latest"
+                ),
+                type: SearchData.self,
+                completion: { [weak self] result in
+                    guard let self = self else { return }
+                    switch result {
+                    case .success(let success):
+                        self.totalData = success
+                        self.data = success.results
+                        self.photoCollectionView.reloadData()
+                        
+                    case .failure(let failure):
+                        print(failure)
+                        ToastManager.showToast(in: self, message: failure.description)
+                    }
                 }
-            }
+            )
         }
     }
     
@@ -242,48 +258,69 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
                 self.photoCollectionView.reloadItems(at: [indexPath])
             }
                 
-            NetworkManager.shared.callStatisticsRequest(id: data[indexPath.item].id) { result in
-                switch result {
-                case .success(let success):
-                    statVC.searchData = self.data[indexPath.item]
-                    statVC.statData = success
-                    statVC.configureSearch()
-                    self.navigationController?.pushViewController(statVC, animated: true)
-                case .failure(let failure):
-                    print("실패", failure)
-                    ToastManager.showToast(in: self, message: failure.description)
+            NetworkManager.shared.callRequest(
+                api: .stat(
+                    id: data[indexPath.item].id
+                ),
+                type: StatisticsData.self,
+                completion: { result in
+                    switch result {
+                    case .success(let success):
+                        statVC.searchData = self.data[indexPath.item]
+                        statVC.statData = success
+                        statVC.configureSearch()
+                        self.navigationController?.pushViewController(statVC, animated: true)
+                    case .failure(let failure):
+                        print("실패", failure)
+                        ToastManager.showToast(in: self, message: failure.description)
+                    }
                 }
-            }
+            )
         } else if collectionView == colorCollectionView {
             print(#function, indexPath)
-            NetworkManager.shared.callSearchRequestByColor(query: keyword, page: 1, color: Color.allCases[indexPath.item].rawValue ) { result in
-                switch result {
-                case .success(let success):
-                    self.totalData = success
-                    self.data = success.results
-                    self.photoCollectionView.reloadData()
-                case .failure(let failure):
-                    print(failure)
-                    ToastManager.showToast(in: self, message: failure.description)
+            NetworkManager.shared.callRequest(
+                api: .color(
+                    query: keyword,
+                    page: 1,
+                    color: Color.allCases[indexPath.item].rawValue
+                ),
+                type: SearchData.self,
+                completion: { result in
+                    switch result {
+                    case .success(let success):
+                        self.totalData = success
+                        self.data = success.results
+                        self.photoCollectionView.reloadData()
+                    case .failure(let failure):
+                        print(failure)
+                        ToastManager.showToast(in: self, message: failure.description)
+                    }
                 }
-            }
+            )
         }
     }
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if indexPath.item == data.count - 4 {
             guard totalData!.total_pages > page else { return }
             page += 1
-            NetworkManager.shared.callSearchRequest(query: keyword, page: page) { [weak self] result in
-                guard let self = self else { return }
-                switch result {
-                case .success(let success):
-                    self.data.append(contentsOf: success.results)
-                    self.photoCollectionView.reloadData()
-                case .failure(let failure):
-                    print("실패", failure)
-                    ToastManager.showToast(in: self, message: failure.description)
+            NetworkManager.shared.callRequest(
+                api: .basic(
+                    query: keyword,
+                    page: page
+                ),
+                type: SearchData.self,
+                completion: { [weak self] result in
+                    guard let self = self else { return }
+                    switch result {
+                    case .success(let success):
+                        self.data.append(contentsOf: success.results)
+                        self.photoCollectionView.reloadData()
+                    case .failure(let failure):
+                        print("실패", failure)
+                        ToastManager.showToast(in: self, message: failure.description)
+                    }
                 }
-            }
+            )
         }
     }
 }
@@ -291,33 +328,40 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
 extension SearchViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         guard let text = searchBar.text else { return }
-        NetworkManager.shared.callSearchRequest(query: text, page: page) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let success):
-                self.totalData = success
-                self.data = success.results
-                print("성공", success.results)
-                if !self.data.isEmpty {
-                    self.photoCollectionView.reloadData()
-                    self.defaultLabel.isHidden = true
-                    self.photoCollectionView.isHidden = false
-                    self.keyword = text
+        NetworkManager.shared.callRequest(
+            api: .basic(
+                query: text,
+                page: page
+            ),
+            type: SearchData.self,
+            completion: { [weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case .success(let success):
+                    self.totalData = success
+                    self.data = success.results
+                    print("성공", success.results)
+                    if !self.data.isEmpty {
+                        self.photoCollectionView.reloadData()
+                        self.defaultLabel.isHidden = true
+                        self.photoCollectionView.isHidden = false
+                        self.keyword = text
 
-                    
-                } else {
-                    self.defaultLabel.text = "검색 결과가 없어요"
-                    self.defaultLabel.isHidden = false
-                    self.photoCollectionView.isHidden = true
-                    self.photoCollectionView.reloadData()
+                        
+                    } else {
+                        self.defaultLabel.text = "검색 결과가 없어요"
+                        self.defaultLabel.isHidden = false
+                        self.photoCollectionView.isHidden = true
+                        self.photoCollectionView.reloadData()
 
+                    }
+
+                case .failure(let failure):
+                    print("실패", failure)
+                    ToastManager.showToast(in: self, message: failure.description)
                 }
-
-            case .failure(let failure):
-                print("실패", failure)
-                ToastManager.showToast(in: self, message: failure.description)
             }
-        }
+        )
         searchBar.endEditing(true)
     }
 }

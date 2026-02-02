@@ -23,11 +23,11 @@ enum NetworkRouter {
     var endpoint: String {
         switch self {
         case .basic, .order, .color:
-            return "\(baseURL)/search/photo"
+            return "\(baseURL)/search/photos"
         case .topic(let topicID):
             return  "\(baseURL)/topics/\(topicID)/photos"
         case .stat(let id):
-            return "\(baseURL)/photo/\(id)/statistics"
+            return "\(baseURL)/photos/\(id)/statistics"
         }
     }
     
@@ -51,13 +51,33 @@ enum NetworkRouter {
     
     var parameter: Parameters {
         switch self {
-        case .basic, .order, .color:
+        case .basic(let query, let page):
             return [
+                "query": query,
+                "page": page,
                 "per_page": 20,
                 "client_id": APIKey.key
             ]
-        case .topic:
+        case .order(let query, let page, let order):
             return [
+                "query": query,
+                "page": page,
+                "order_by": order,
+                "per_page": 20,
+                "client_id": APIKey.key
+            ]
+        case .color(let query, let page, let color):
+            return [
+                "query": query,
+                "page": page,
+                "color": color,
+                "per_page": 20,
+                "client_id": APIKey.key
+            ]
+
+        case .topic(let topicID):
+            return [
+                "id_or_slug": topicID,
                 "page": 1,
                 "client_id": APIKey.key
             ]

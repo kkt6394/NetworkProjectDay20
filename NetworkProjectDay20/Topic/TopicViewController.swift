@@ -147,29 +147,34 @@ class TopicViewController: BaseViewController {
     }
     
     func callRequest(_ topicID: String, completion: @escaping () -> Void ) {
-        NetworkManager.shared.callTopicRequest(topicID: topicID) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let success):
-                switch topicID {
-                case selectedTopics[0].rawValue:
-                    self.firstData = success
-                    
-                case selectedTopics[1].rawValue:
-                    self.secondData = success
-                    
-                case selectedTopics[2].rawValue:
-                    self.thirdData = success
-                    
-                default:
-                    print(success)
+        NetworkManager.shared.callRequest(
+            api: .topic(
+                topicID: topicID
+            ),
+            type: [TopicData].self,
+            completion: { [weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case .success(let success):
+                    switch topicID {
+                    case selectedTopics[0].rawValue:
+                        self.firstData = success
+                        
+                    case selectedTopics[1].rawValue:
+                        self.secondData = success
+                        
+                    case selectedTopics[2].rawValue:
+                        self.thirdData = success
+                        
+                    default:
+                        print(success)
+                    }
+                case .failure(let failure):
+                    print(failure)
                 }
-            case .failure(let failure):
-                print(failure)
+                completion()
             }
-            completion()
-        }
-        
+        )
     }
     
     func fetchAllTopic() {
@@ -265,19 +270,26 @@ extension TopicViewController: UICollectionViewDelegate, UICollectionViewDataSou
                 self.firstCV.reloadItems(at: [indexPath])
             }
             
-            NetworkManager.shared.callStatisticsRequest(id: firstData[indexPath.item].id) { [weak self] result in
-                guard let self = self else { return }
-                switch result {
-                case .success(let success):
-                    statVC.topicData = self.firstData[indexPath.item]
-                    statVC.statData = success
-                    statVC.configureTopic()
-                    self.navigationController?.pushViewController(statVC, animated: true)
-                case .failure(let failure):
-                    print("실패", failure)
-                    ToastManager.showToast(in: self, message: failure.description)
+            NetworkManager.shared.callRequest(
+                api: .stat(
+                    id: firstData[indexPath.item].id
+                ),
+                type: StatisticsData.self,
+                completion: { [weak self] result in
+                    guard let self = self else { return }
+                    switch result {
+                    case .success(let success):
+                        statVC.topicData = self.firstData[indexPath.item]
+                        statVC.statData = success
+                        statVC.configureTopic()
+                        self.navigationController?.pushViewController(statVC, animated: true)
+                    case .failure(let failure):
+                        print("실패", failure)
+                        ToastManager.showToast(in: self, message: failure.description)
+                    }
                 }
-            }
+            )
+            
         } else if collectionView == secondCV {
             let photoID = secondData[indexPath.item].id
             statVC.buttonTag = likedID.contains(photoID)
@@ -291,19 +303,25 @@ extension TopicViewController: UICollectionViewDelegate, UICollectionViewDataSou
                 self.secondCV.reloadItems(at: [indexPath])
             }
             
-            NetworkManager.shared.callStatisticsRequest(id: secondData[indexPath.item].id) { [weak self] result in
-                guard let self = self else { return }
-                switch result {
-                case .success(let success):
-                    statVC.topicData = self.secondData[indexPath.item]
-                    statVC.statData = success
-                    statVC.configureTopic()
-                    self.navigationController?.pushViewController(statVC, animated: true)
-                case .failure(let failure):
-                    print("실패", failure)
-                    ToastManager.showToast(in: self, message: failure.description)
+            NetworkManager.shared.callRequest(
+                api: .stat(
+                    id: secondData[indexPath.item].id
+                ),
+                type: StatisticsData.self,
+                completion: { [weak self] result in
+                    guard let self = self else { return }
+                    switch result {
+                    case .success(let success):
+                        statVC.topicData = self.secondData[indexPath.item]
+                        statVC.statData = success
+                        statVC.configureTopic()
+                        self.navigationController?.pushViewController(statVC, animated: true)
+                    case .failure(let failure):
+                        print("실패", failure)
+                        ToastManager.showToast(in: self, message: failure.description)
+                    }
                 }
-            }
+            )
         } else {
             let photoID = thirdData[indexPath.item].id
             statVC.buttonTag = likedID.contains(photoID)
@@ -316,19 +334,25 @@ extension TopicViewController: UICollectionViewDelegate, UICollectionViewDataSou
                 UserDefaults.standard.set(Array(self.likedID), forKey: "likedID")
                 self.thirdCV.reloadItems(at: [indexPath])
             }
-            NetworkManager.shared.callStatisticsRequest(id: thirdData[indexPath.item].id) { [weak self] result in
-                guard let self = self else { return }
-                switch result {
-                case .success(let success):
-                    statVC.topicData = self.thirdData[indexPath.item]
-                    statVC.statData = success
-                    statVC.configureTopic()
-                    self.navigationController?.pushViewController(statVC, animated: true)
-                case .failure(let failure):
-                    print("실패", failure)
-                    ToastManager.showToast(in: self, message: failure.description)
+            NetworkManager.shared.callRequest(
+                api: .stat(
+                    id: thirdData[indexPath.item].id
+                ),
+                type: StatisticsData.self,
+                completion: { [weak self] result in
+                    guard let self = self else { return }
+                    switch result {
+                    case .success(let success):
+                        statVC.topicData = self.thirdData[indexPath.item]
+                        statVC.statData = success
+                        statVC.configureTopic()
+                        self.navigationController?.pushViewController(statVC, animated: true)
+                    case .failure(let failure):
+                        print("실패", failure)
+                        ToastManager.showToast(in: self, message: failure.description)
+                    }
                 }
-            }
+            )            
         }
     }
     func setCV() {

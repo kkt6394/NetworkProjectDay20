@@ -14,13 +14,14 @@ class NetworkManager {
     
     func request<T: Decodable>(
         url: String,
+        method: HTTPMethod,
         parameter: Parameters,
         header: HTTPHeaders,
         completion: @escaping (Result<T, NetworkError>) -> Void
     ) {
         AF.request(
             url,
-            method: .get,
+            method: method,
             parameters: parameter,
             headers: header
         )
@@ -64,6 +65,7 @@ class NetworkManager {
         
         request(
             url: api.endpoint,
+            method: api.method,
             parameter: api.parameter,
             header: api.header,
             completion: completion
