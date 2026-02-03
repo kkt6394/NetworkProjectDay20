@@ -326,9 +326,9 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
 }
 
 extension SearchViewController: UISearchBarDelegate {
-    private func validateText(text: String) throws(SearchError) -> String{
+    private func validateText(text: String) throws(SearchError) -> Bool{
         // searchBar에서 옵셔널 처리 / 빈 값
-        
+        // placeholder로 구분지어 보기.
         guard text.count != 0 else {
             print("빈 값")
             throw .empty
@@ -343,16 +343,16 @@ extension SearchViewController: UISearchBarDelegate {
             print("너무 긺")
             throw .tooLong
         }
-        return text
+        return true
     }
     // 조건 통과하면 그대로 검색, 통과 못하면 토스트 띄워주기.
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        let text = searchBar.text
+        guard let text = searchBar.text else { return }
         do {
-            let resultString = try validateText(text: text ?? "")
+            let resultString = try validateText(text: text)
             NetworkManager.shared.callRequest(
                 api: .basic(
-                    query: resultString,
+                    query: text,
                     page: page
                 ),
                 type: SearchData.self,
@@ -367,7 +367,7 @@ extension SearchViewController: UISearchBarDelegate {
                             self.photoCollectionView.reloadData()
                             self.defaultLabel.isHidden = true
                             self.photoCollectionView.isHidden = false
-                            self.keyword = resultString
+                            self.keyword = text
                             
                             
                         } else {

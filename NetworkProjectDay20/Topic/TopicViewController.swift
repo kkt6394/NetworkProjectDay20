@@ -39,6 +39,7 @@ final class TopicViewController: BaseViewController {
         navigationController?.isNavigationBarHidden = true
         setCV()
         fetchAllTopic()
+        userBtn.addTarget(self, action: #selector(userBtnTapped), for: .touchUpInside)
         
     }
     
@@ -144,6 +145,10 @@ final class TopicViewController: BaseViewController {
     
     private func pickRandomTopics() {
         selectedTopics = Array(TopicID.allCases.shuffled().prefix(3))
+    }
+    @objc
+    private func userBtnTapped() {
+        navigationController?.pushViewController(ProfileViewController(), animated: true)
     }
     
     private func callRequest(_ topicID: String, completion: @escaping () -> Void ) {
