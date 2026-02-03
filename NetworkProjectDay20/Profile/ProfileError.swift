@@ -8,6 +8,7 @@
 import Foundation
 
 enum ProfileError: Error/*, LocalizedError*/ {
+    // LocalizedError 채택하면 errorDescription이 nil로 나옴
     case empty
     case isNotNumber
     case outOfRange
