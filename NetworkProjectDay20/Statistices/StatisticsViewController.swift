@@ -9,10 +9,10 @@ import UIKit
 import SnapKit
 import Kingfisher
 
-class StatisticsViewController: BaseViewController {
+final class StatisticsViewController: BaseViewController {
     
     var closureData: ((Bool) -> Void)?
-
+    
     lazy var key = searchData?.id
     lazy var buttonTag = UserDefaults.standard.bool(forKey: key ?? "")
     
@@ -20,36 +20,36 @@ class StatisticsViewController: BaseViewController {
     var searchData: SearchData.Result?
     var topicData: TopicData?
     
-    var profileImageUrl: String?
-    var mainImageUrl: String?
-    var name: String?
-    var date: String?
+    private var profileImageUrl: String?
+    private var mainImageUrl: String?
+    private var name: String?
+    private var date: String?
     
-    let scrollView = UIScrollView()
-    let contentsView = UIView()
+    private let scrollView = UIScrollView()
+    private let contentsView = UIView()
     
-    let profileImage = UIImageView()
+    private let profileImage = UIImageView()
     
-    let profileStackView = UIStackView()
-    let nameLabel = UILabel()
-    let createdDay = UILabel()
+    private let profileStackView = UIStackView()
+    private let nameLabel = UILabel()
+    private let createdDay = UILabel()
     
-    let heartImageBtn = UIButton()
+    private let heartImageBtn = UIButton()
     
-    let mainImageView = UIImageView()
+    private let mainImageView = UIImageView()
     
-    let infoLabel = UILabel()
+    private let infoLabel = UILabel()
     
-    let sizeLabel = UILabel()
-    let resolutionLabel = UILabel()
-    let viewLabel = UILabel()
-    let viewCountLabel = UILabel()
-    let downloadLabel = UILabel()
-    let downloadCountLabel = UILabel()
+    private let sizeLabel = UILabel()
+    private let resolutionLabel = UILabel()
+    private let viewLabel = UILabel()
+    private let viewCountLabel = UILabel()
+    private let downloadLabel = UILabel()
+    private let downloadCountLabel = UILabel()
     
-    let chartLabel = UILabel()
+    private let chartLabel = UILabel()
     
-    let segCtr = UISegmentedControl()
+    private let segCtr = UISegmentedControl()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -113,14 +113,11 @@ class StatisticsViewController: BaseViewController {
         contentsView.snp.makeConstraints { make in
             make.width.equalTo(scrollView.frameLayoutGuide)
             make.verticalEdges.equalTo(scrollView.contentLayoutGuide)
-
         }
-        
         mainImageView.snp.makeConstraints { make in
             make.top.equalToSuperview()
             make.horizontalEdges.equalToSuperview()
         }
-        
         infoLabel.snp.makeConstraints { make in
             make.top.equalTo(mainImageView.snp.bottom).offset(14)
             make.leading.equalToSuperview().offset(20)
@@ -160,15 +157,14 @@ class StatisticsViewController: BaseViewController {
         }
     }
     override func configureView() {
-        
     }
     
-    func setBtn() {
+    private func setBtn() {
         heartImageBtn.addTarget(self, action: #selector(heartImageBtnTapped), for: .touchUpInside)
     }
     
     @objc
-    func heartImageBtnTapped() {
+    private func heartImageBtnTapped() {
         if buttonTag {
             // 좋아요 상태
             UserDefaults.standard.set(false, forKey: key ?? "")
@@ -176,11 +172,10 @@ class StatisticsViewController: BaseViewController {
             closureData?(false)
         } else {
             UserDefaults.standard.set(true, forKey: key ?? "")
-
+            
             heartImageBtn.setImage(UIImage(systemName: "heart.fill"), for: .normal)
             closureData?(true)
         }
-        
     }
     
     func configureSearch() {
@@ -205,7 +200,6 @@ class StatisticsViewController: BaseViewController {
         downloadLabel.text = "다운로드"
         downloadCountLabel.text = statData?.downloads.total.formatted()
         chartLabel.text = "차트"
-        
     }
     
     func configureTopic() {
@@ -230,8 +224,5 @@ class StatisticsViewController: BaseViewController {
         downloadLabel.text = "다운로드"
         downloadCountLabel.text = statData?.downloads.total.formatted()
         chartLabel.text = "차트"
-        
-
     }
-    
 }

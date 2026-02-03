@@ -8,10 +8,10 @@
 import UIKit
 import SnapKit
 
-class ColorCollectionViewCell: UICollectionViewCell {
-    let stackView = UIStackView()
-    let imageView = UIImageView()
-    let label = UILabel()
+final class ColorCollectionViewCell: UICollectionViewCell {
+    private let stackView = UIStackView()
+    private let imageView = UIImageView()
+    private let label = UILabel()
         
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -24,7 +24,7 @@ class ColorCollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configureHierarchy() {
+    private func configureHierarchy() {
         [
             stackView
         ].forEach { contentView.addSubview($0) }
@@ -35,7 +35,7 @@ class ColorCollectionViewCell: UICollectionViewCell {
 
     }
     
-    func configureLayout() {
+    private func configureLayout() {
         stackView.snp.makeConstraints { make in
             make.center.equalToSuperview()
             make.height.equalTo(36)
@@ -46,7 +46,7 @@ class ColorCollectionViewCell: UICollectionViewCell {
         }
         
     }
-    func configureView() {
+    private func configureView() {
         stackView.axis = .horizontal
         stackView.spacing = 5
         stackView.alignment = .center

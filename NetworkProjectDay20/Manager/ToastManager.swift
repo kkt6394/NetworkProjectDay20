@@ -8,7 +8,7 @@
 import UIKit
 import Toast
 
-class ToastManager {
+final class ToastManager {
     static func showToast(
         in viewController: UIViewController,
         message: String

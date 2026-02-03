@@ -8,7 +8,7 @@
 import UIKit
 import Alamofire
 
-class NetworkManager {
+final class NetworkManager {
     static let shared = NetworkManager()
     private init() {}
     
@@ -70,5 +70,7 @@ class NetworkManager {
             header: api.header,
             completion: completion
         )
+        
+        
     }
 }

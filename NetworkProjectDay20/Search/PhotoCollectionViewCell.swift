@@ -9,12 +9,12 @@ import UIKit
 import SnapKit
 import Kingfisher
 
-class PhotoCollectionViewCell: UICollectionViewCell {
+final class PhotoCollectionViewCell: UICollectionViewCell {
         
-    let imageView = UIImageView()
-    let stackView = UIStackView()
-    let starImage = UIImageView()
-    let countLabel = UILabel()
+    private let imageView = UIImageView()
+    private let stackView = UIStackView()
+    private let starImage = UIImageView()
+    private let countLabel = UILabel()
     
     let heartImage = UIImageView()
     
@@ -29,7 +29,7 @@ class PhotoCollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configureHierarchy() {
+    private func configureHierarchy() {
         [
             imageView, stackView, heartImage
         ].forEach { contentView.addSubview($0) }
@@ -40,7 +40,7 @@ class PhotoCollectionViewCell: UICollectionViewCell {
 
     }
     
-    func configureLayout() {
+    private func configureLayout() {
         imageView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
@@ -61,7 +61,7 @@ class PhotoCollectionViewCell: UICollectionViewCell {
         }
     }
     
-    func configureView() {
+    private func configureView() {
         
         imageView.image = UIImage(systemName: "circle")
         

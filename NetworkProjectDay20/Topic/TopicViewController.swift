@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-class TopicViewController: BaseViewController {
+final class TopicViewController: BaseViewController {
     
     var likedID: Set<String> = []
     
@@ -19,20 +19,20 @@ class TopicViewController: BaseViewController {
     var secondData: [TopicData] = []
     var thirdData: [TopicData] = []
     
-    let userBtn = UIButton()
-    let titleLabel = UILabel()
+    private let userBtn = UIButton()
+    private let titleLabel = UILabel()
     
-    let scrollView = UIScrollView()
-    let contentView = UIView()
+    private let scrollView = UIScrollView()
+    private let contentView = UIView()
     
-    let goldenLabel = UILabel()
-    lazy var firstCV = UICollectionView(frame: .zero, collectionViewLayout: configureLayout())
+    private let goldenLabel = UILabel()
+    private lazy var firstCV = UICollectionView(frame: .zero, collectionViewLayout: configureLayout())
     
-    let businessLabel = UILabel()
-    lazy var secondCV = UICollectionView(frame: .zero, collectionViewLayout: configureLayout())
+    private let businessLabel = UILabel()
+    private lazy var secondCV = UICollectionView(frame: .zero, collectionViewLayout: configureLayout())
     
-    let architectureLabel = UILabel()
-    lazy var thirdCV = UICollectionView(frame: .zero, collectionViewLayout: configureLayout())
+    private  let architectureLabel = UILabel()
+    private lazy var thirdCV = UICollectionView(frame: .zero, collectionViewLayout: configureLayout())
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -136,17 +136,17 @@ class TopicViewController: BaseViewController {
         
     }
     
-    func configureTopicLabel() {
+    private func configureTopicLabel() {
         goldenLabel.text = selectedTopics[0].topicLabel
         businessLabel.text = selectedTopics[1].topicLabel
         architectureLabel.text = selectedTopics[2].topicLabel
     }
     
-    func pickRandomTopics() {
+    private func pickRandomTopics() {
         selectedTopics = Array(TopicID.allCases.shuffled().prefix(3))
     }
     
-    func callRequest(_ topicID: String, completion: @escaping () -> Void ) {
+    private func callRequest(_ topicID: String, completion: @escaping () -> Void ) {
         NetworkManager.shared.callRequest(
             api: .topic(
                 topicID: topicID
@@ -177,7 +177,7 @@ class TopicViewController: BaseViewController {
         )
     }
     
-    func fetchAllTopic() {
+    private func fetchAllTopic() {
         
         pickRandomTopics()
         configureTopicLabel()
@@ -285,7 +285,7 @@ extension TopicViewController: UICollectionViewDelegate, UICollectionViewDataSou
                         self.navigationController?.pushViewController(statVC, animated: true)
                     case .failure(let failure):
                         print("실패", failure)
-                        ToastManager.showToast(in: self, message: failure.description)
+                        ToastManager.showToast(in: self, message: failure.errorDescription)
                     }
                 }
             )
@@ -318,7 +318,7 @@ extension TopicViewController: UICollectionViewDelegate, UICollectionViewDataSou
                         self.navigationController?.pushViewController(statVC, animated: true)
                     case .failure(let failure):
                         print("실패", failure)
-                        ToastManager.showToast(in: self, message: failure.description)
+                        ToastManager.showToast(in: self, message: failure.errorDescription)
                     }
                 }
             )
@@ -349,13 +349,13 @@ extension TopicViewController: UICollectionViewDelegate, UICollectionViewDataSou
                         self.navigationController?.pushViewController(statVC, animated: true)
                     case .failure(let failure):
                         print("실패", failure)
-                        ToastManager.showToast(in: self, message: failure.description)
+                        ToastManager.showToast(in: self, message: failure.errorDescription)
                     }
                 }
             )            
         }
     }
-    func setCV() {
+    private func setCV() {
         firstCV.delegate = self
         firstCV.dataSource = self
         firstCV.register(
@@ -378,7 +378,7 @@ extension TopicViewController: UICollectionViewDelegate, UICollectionViewDataSou
         )
     }
     
-    func configureLayout() -> UICollectionViewLayout {
+    private func configureLayout() -> UICollectionViewLayout {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
         let width = (UIScreen.main.bounds.width - 22) / 2

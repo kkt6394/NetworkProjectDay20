@@ -8,7 +8,19 @@
 import Foundation
 import Alamofire
 
-enum NetworkRouter {
+// Request
+protocol Router {
+    var baseURL: String { get }
+    var endpoint: String { get }
+    var header: HTTPHeaders { get }
+    var method: HTTPMethod { get }
+    var parameter: Parameters { get }
+    
+}
+
+
+// Unsplash API Request
+enum NetworkRouter: Router {
     
     case basic(query: String, page: Int)
     case order(query: String, page: Int, order: String)

@@ -7,14 +7,15 @@
 
 import UIKit
 
-enum NetworkError: Error {
+enum NetworkError: Error, LocalizedError {
     case badRequest
     case unauthorized
     case forbidden
     case notFound
     case somethingWrong
     
-    var description: String {
+    
+    var errorDescription: String {
         switch self {
         case .badRequest:
             "The request was unacceptable, often due to missing a required parameter"
@@ -28,5 +29,6 @@ enum NetworkError: Error {
             "Something went wrong on our end"
         }
     }
+    
 }
 

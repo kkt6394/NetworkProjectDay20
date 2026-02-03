@@ -10,22 +10,22 @@ import SnapKit
 import Kingfisher
 import Toast
 
-class SearchViewController: BaseViewController {
+final class SearchViewController: BaseViewController {
     
-    var likedID: Set<String> = []
+    private var likedID: Set<String> = []
     
-    var page = 1
-    var start = 1
-    var keyword = ""
-    var totalData: SearchData?
-    var data: [SearchData.Result] = []
+    private var page = 1
+    private var start = 1
+    private var keyword = ""
+    private var totalData: SearchData?
+    private var data: [SearchData.Result] = []
     
-    let switchBtn = UIButton()
-    let pageTitle = UILabel()
-    let searchBar = UISearchBar()
-    lazy var colorCollectionView = UICollectionView(frame: .zero, collectionViewLayout: setColorCVLayout())
-    lazy var photoCollectionView = UICollectionView(frame: .zero, collectionViewLayout: setPhotoCVLayout())
-    var defaultLabel = UILabel()
+    private let switchBtn = UIButton()
+    private let pageTitle = UILabel()
+    private let searchBar = UISearchBar()
+    private lazy var colorCollectionView = UICollectionView(frame: .zero, collectionViewLayout: setColorCVLayout())
+    private lazy var photoCollectionView = UICollectionView(frame: .zero, collectionViewLayout: setPhotoCVLayout())
+    private var defaultLabel = UILabel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -105,12 +105,12 @@ class SearchViewController: BaseViewController {
     }
     
     @objc
-    func switchBtnTapped() {
+    private func switchBtnTapped() {
         print(#function)
         guard !data.isEmpty else { return }
         if switchBtn.title(for: .normal) == " 관련순" {
             switchBtn.setTitle(" 최신순", for: .normal)
-        
+            
             NetworkManager.shared.callRequest(
                 api: .order(
                     query: keyword,
@@ -128,7 +128,7 @@ class SearchViewController: BaseViewController {
                         
                     case .failure(let failure):
                         print(failure)
-                        ToastManager.showToast(in: self, message: failure.description)
+                        ToastManager.showToast(in: self, message: failure.errorDescription)
                     }
                 }
             )
@@ -151,14 +151,14 @@ class SearchViewController: BaseViewController {
                         
                     case .failure(let failure):
                         print(failure)
-                        ToastManager.showToast(in: self, message: failure.description)
+                        ToastManager.showToast(in: self, message: failure.errorDescription)
                     }
                 }
             )
         }
     }
     
-    func configureCollectionView() {
+    private func configureCollectionView() {
         colorCollectionView.register(
             ColorCollectionViewCell.self,
             forCellWithReuseIdentifier: String(
@@ -179,19 +179,19 @@ class SearchViewController: BaseViewController {
         photoCollectionView.dataSource = self
     }
     
-    func setColorCVLayout() -> UICollectionViewLayout {
+    private func setColorCVLayout() -> UICollectionViewLayout {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
         let width = UIScreen.main.bounds.width / 5
         layout.itemSize = CGSize(width: 100, height: 44)
         layout.sectionInset = UIEdgeInsets(top: 0, left: 4, bottom: 0, right: 4)
-//        layout.minimumInteritemSpacing = 10
+        //        layout.minimumInteritemSpacing = 10
         layout.minimumLineSpacing = 10
         
         return layout
     }
     
-    func setPhotoCVLayout() -> UICollectionViewLayout {
+    private func setPhotoCVLayout() -> UICollectionViewLayout {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
         let width = (UIScreen.main.bounds.width - 22) / 2
@@ -257,7 +257,7 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
                 UserDefaults.standard.set(Array(self.likedID), forKey: "likedID")
                 self.photoCollectionView.reloadItems(at: [indexPath])
             }
-                
+            
             NetworkManager.shared.callRequest(
                 api: .stat(
                     id: data[indexPath.item].id
@@ -272,7 +272,7 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
                         self.navigationController?.pushViewController(statVC, animated: true)
                     case .failure(let failure):
                         print("실패", failure)
-                        ToastManager.showToast(in: self, message: failure.description)
+                        ToastManager.showToast(in: self, message: failure.errorDescription)
                     }
                 }
             )
@@ -293,7 +293,7 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
                         self.photoCollectionView.reloadData()
                     case .failure(let failure):
                         print(failure)
-                        ToastManager.showToast(in: self, message: failure.description)
+                        ToastManager.showToast(in: self, message: failure.errorDescription)
                     }
                 }
             )
@@ -317,7 +317,7 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
                         self.photoCollectionView.reloadData()
                     case .failure(let failure):
                         print("실패", failure)
-                        ToastManager.showToast(in: self, message: failure.description)
+                        ToastManager.showToast(in: self, message: failure.errorDescription)
                     }
                 }
             )
@@ -326,42 +326,69 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
 }
 
 extension SearchViewController: UISearchBarDelegate {
+    private func validateText(text: String) throws(SearchError) -> String{
+        // searchBar에서 옵셔널 처리 / 빈 값
+        
+        guard text.count != 0 else {
+            print("빈 값")
+            throw .empty
+        }
+        
+        guard text.count >= 2 else {
+            print("한 글자")
+            throw .tooShort
+        }
+        
+        guard text.count <= 15 else {
+            print("너무 긺")
+            throw .tooLong
+        }
+        return text
+    }
+    // 조건 통과하면 그대로 검색, 통과 못하면 토스트 띄워주기.
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        guard let text = searchBar.text else { return }
-        NetworkManager.shared.callRequest(
-            api: .basic(
-                query: text,
-                page: page
-            ),
-            type: SearchData.self,
-            completion: { [weak self] result in
-                guard let self = self else { return }
-                switch result {
-                case .success(let success):
-                    self.totalData = success
-                    self.data = success.results
-                    print("성공", success.results)
-                    if !self.data.isEmpty {
-                        self.photoCollectionView.reloadData()
-                        self.defaultLabel.isHidden = true
-                        self.photoCollectionView.isHidden = false
-                        self.keyword = text
-
+        let text = searchBar.text
+        do {
+            let resultString = try validateText(text: text ?? "")
+            NetworkManager.shared.callRequest(
+                api: .basic(
+                    query: resultString,
+                    page: page
+                ),
+                type: SearchData.self,
+                completion: { [weak self] result in
+                    guard let self = self else { return }
+                    switch result {
+                    case .success(let success):
+                        self.totalData = success
+                        self.data = success.results
+                        print("성공", success.results)
+                        if !self.data.isEmpty {
+                            self.photoCollectionView.reloadData()
+                            self.defaultLabel.isHidden = true
+                            self.photoCollectionView.isHidden = false
+                            self.keyword = resultString
+                            
+                            
+                        } else {
+                            self.defaultLabel.text = "검색 결과가 없어요"
+                            self.defaultLabel.isHidden = false
+                            self.photoCollectionView.isHidden = true
+                            self.photoCollectionView.reloadData()
+                            
+                        }
                         
-                    } else {
-                        self.defaultLabel.text = "검색 결과가 없어요"
-                        self.defaultLabel.isHidden = false
-                        self.photoCollectionView.isHidden = true
-                        self.photoCollectionView.reloadData()
-
+                    case .failure(let failure):
+                        print("실패", failure)
+                        ToastManager.showToast(in: self, message: failure.errorDescription)
                     }
-
-                case .failure(let failure):
-                    print("실패", failure)
-                    ToastManager.showToast(in: self, message: failure.description)
                 }
-            }
-        )
-        searchBar.endEditing(true)
+            )
+            searchBar.endEditing(true)
+        } catch {
+            ToastManager.showToast(in: self, message: error.errorDescription)
+        }
+        
+        
     }
 }
